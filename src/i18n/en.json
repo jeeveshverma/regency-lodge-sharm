@@ -12,14 +12,11 @@
     "skip": "Skip to content",
     "mine": "My booking"
   },
-  "strip": {
-    "sunset": "Sunset in Sharm today",
-    "sea": "Average sea temperature this month"
-  },
   "hero": {
     "kicker": "El Hadaba · Sharm El Sheikh",
-    "h1": "A room on the pool, EGP {price} a night.",
-    "lead": "Twenty rooms, all the same kind, and three plain prices. Pick your dates and see which keys are still hanging on the board."
+    "h1a": "Sleep here.",
+    "h1b": "Spend the rest on the sea.",
+    "lead": "A double room on the pool for EGP {price} a night, up on El Hadaba, seven minutes' walk from the dive centre. Pick your dates and take your key off the board."
   },
   "bar": {
     "in": "Check-in",
@@ -34,13 +31,13 @@
     "short": "Only {n} free on these dates. Ask for fewer rooms or change the dates.",
     "legendFree": "Key hanging: room free",
     "legendTaken": "Empty hook: booked",
-    "legendMine": "Blue key: yours",
+    "legendMine": "Yellow key: yours",
     "roomLabel": "Room {n}",
     "error": "Could not check availability: {msg}"
   },
   "photo": {
     "pool": "The pool with the rooms looking onto it",
-    "caption": "The pool sits in the middle of the lodge, and every room looks onto it."
+    "note": "Every room looks onto this"
   },
   "plans": {
     "title": "Three prices, nothing hidden",
@@ -97,13 +94,6 @@
     "pTv": "TV",
     "alt1": "Room with two beds, wardrobe and television",
     "alt2": "Room with two beds and two windows"
-  },
-  "around": {
-    "title": "A short walk away",
-    "lead": "Walking times from the lodge door.",
-    "door": "Lodge door",
-    "min": "{n} min",
-    "airport": "Sharm El Sheikh International Airport is 15.6 km by car."
   },
   "direct": {
     "title": "Why book here?",
@@ -182,5 +172,34 @@
     "cancel": "Cancel this booking",
     "cancelSure": "Press again to confirm the cancellation",
     "cancelledMsg": "The booking is cancelled."
+  },
+  "sticker": {
+    "from": "from",
+    "unit": "EGP / night"
+  },
+  "today": {
+    "title": "Sharm, today",
+    "sunset": "Sunset",
+    "daylight": "hours of daylight",
+    "sea": "Sea temperature this month",
+    "dive": "on foot to the dive centre",
+    "diveV": "{n} min"
+  },
+  "day": {
+    "title": "A day from the lodge door",
+    "lead": "Nobody comes to Sharm to sit in the room. This is what is waiting outside it.",
+    "am": "Morning",
+    "amT": "The reef",
+    "amB": "El Hadaba stands above the Ras Um Sid reef, and the dive centre is minutes from the door. A mask and fins, and the Red Sea does the rest.",
+    "pm": "Afternoon",
+    "pmT": "The pool",
+    "pmB": "Come back when the sun is at its strongest. The pool is in the middle of the lodge, with umbrellas and sunbeds around it and your room two steps away.",
+    "eve": "Evening",
+    "eveT": "Dinner and the market",
+    "eveB": "El Hadaba's restaurants are a walk away, and the Old Market and Al Sahaba mosque are at their best after sunset.",
+    "walk": "{n} min walk",
+    "trips": "With a whole day",
+    "tripsT": "Ras Mohammed National Park and Tiran Island: boat trips leave Sharm every morning.",
+    "airport": "Sharm El Sheikh International Airport is 15.6 km by car."
   }
 }

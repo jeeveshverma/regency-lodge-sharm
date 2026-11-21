@@ -1,0 +1,69 @@
+---
+/**
+ * What is under the water off El Hadaba, as decoration behind the "day from the lodge" section:
+ * light falling from the surface, fish crossing at different depths, bubbles, and coral on the seabed.
+ */
+const fish = [
+  { top: 9, size: 84, dur: 46, delay: -8, kind: 'y' },
+  { top: 22, size: 52, dur: 38, delay: -22, kind: 'w', flip: true },
+  { top: 41, size: 104, dur: 58, delay: -30, kind: 'c' },
+  { top: 58, size: 46, dur: 33, delay: -4, kind: 'y', flip: true },
+  { top: 72, size: 66, dur: 50, delay: -40, kind: 'w' },
+  { top: 84, size: 56, dur: 41, delay: -15, kind: 'y' },
+];
+const bubbles = [6, 19, 33, 48, 61, 77, 90].map((left, i) => ({ left, size: 6 + ((i * 5) % 9), dur: 9 + ((i * 3) % 7), delay: -i * 1.7 }));
+const coral = Array.from({ length: 13 }, (_, i) => ({ x: 40 + i * 96 + ((i * 37) % 30), h: 46 + ((i * 53) % 44), kind: i % 3 }));
+---
+<div class="reef" aria-hidden="true">
+  <div class="rays"></div>
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="fish" viewBox="0 0 44 26">
+      <path class="fb" d="M2 13Q14 0 30 9L41 2V24L30 17Q14 26 2 13Z" />
+      <path class="fs" d="M17 5.2Q20 13 17 20.8M24 6.6Q26.5 13 24 19.4" />
+      <circle class="fe" cx="8.5" cy="11.5" r="1.6" />
+    </symbol>
+  </svg>
+  {fish.map((f) => (
+    <span class:list={['fish', `fish-${f.kind}`, f.flip && 'flip']} style={`top:${f.top}%;--dur:${f.dur}s;--delay:${f.delay}s`}>
+      <svg width={f.size} height={(f.size * 26) / 44}><use href="#fish" /></svg>
+    </span>
+  ))}
+  {bubbles.map((b) => <span class="bubble" style={`left:${b.left}%;width:${b.size}px;height:${b.size}px;--dur:${b.dur}s;--delay:${b.delay}s`}></span>)}
+  <svg class="seabed" viewBox="0 0 1300 150" preserveAspectRatio="xMidYMax slice">
+    {coral.map((c) => c.kind === 0 ? (
+      <path class="branch" d={`M${c.x} 150V${150 - c.h}M${c.x} ${150 - c.h * 0.45}q-20 -8 -22 -${c.h * 0.5}M${c.x} ${150 - c.h * 0.6}q18 -6 22 -${c.h * 0.45}`} />
+    ) : c.kind === 1 ? (
+      <g><path class="dome" d={`M${c.x - 30} 150a30 ${c.h * 0.5} 0 0 1 60 0Z`} /><path class="dots" d={`M${c.x - 12} ${150 - c.h * 0.22}h.1M${c.x + 8} ${150 - c.h * 0.3}h.1M${c.x} ${150 - c.h * 0.12}h.1M${c.x + 16} ${150 - c.h * 0.1}h.1`} /></g>
+    ) : (
+      <path class="fan" d={`M${c.x} 150q-14 -${c.h * 0.6} -4 -${c.h}M${c.x} 150q4 -${c.h * 0.5} 22 -${c.h * 0.8}M${c.x} 150q-10 -${c.h * 0.4} -30 -${c.h * 0.62}`} />
+    ))}
+    <path class="sand" d="M0 150V136q160 -16 330 -4t330 2t330 -6t310 8V150Z" />
+  </svg>
+</div>
+<style>
+  .reef { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .rays { position: absolute; inset: 0 0 40% 0; opacity: 0.5;
+    background: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.16) 0 40px, transparent 40px 150px, rgba(255, 255, 255, 0.08) 150px 210px, transparent 210px 380px);
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent); mask-image: linear-gradient(to bottom, #000, transparent); }
+  .fish { position: absolute; left: 0; animation: swim var(--dur) linear var(--delay) infinite; will-change: transform; }
+  .fish.flip { animation-name: swim-back; }
+  .fish.flip svg { transform: scaleX(-1); }
+  @keyframes swim { from { transform: translateX(105vw); } to { transform: translateX(-140px); } }
+  @keyframes swim-back { from { transform: translateX(-140px); } to { transform: translateX(105vw); } }
+  /* the fish is one shared symbol: colours reach it through custom properties */
+  :global(.fb) { fill: var(--fb, var(--sun)); }
+  :global(.fs) { fill: none; stroke: var(--fs, var(--navy)); stroke-width: 2.2; stroke-linecap: round; }
+  :global(.fe) { fill: var(--navy); }
+  .fish-w { --fb: #fff; --fs: var(--cobalt); }
+  .fish-c { --fb: var(--coral); --fs: #fff; }
+  .bubble { position: absolute; bottom: -20px; border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.55); animation: rise var(--dur) ease-in var(--delay) infinite; }
+  @keyframes rise { from { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } to { transform: translateY(-520px) translateX(14px); opacity: 0; } }
+  .seabed { position: absolute; inset: auto 0 0 0; width: 100%; height: 150px; }
+  .branch, .fan { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .branch { stroke: var(--coral); stroke-width: 9; }
+  .fan { stroke: #7fd8f0; stroke-width: 5; opacity: 0.8; }
+  .dome { fill: #f6a9c0; }
+  .dots { stroke: var(--navy-deep); stroke-width: 4; stroke-linecap: round; opacity: 0.45; }
+  .sand { fill: var(--navy-deep); }
+  @media (prefers-reduced-motion: reduce) { .fish, .bubble { animation: none; } .fish { transform: translateX(calc(var(--dur) * 1.6vw)); } .bubble { display: none; } }
+</style>

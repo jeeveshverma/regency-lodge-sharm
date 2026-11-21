@@ -1,8 +1,6 @@
 ---
-import '@fontsource/aref-ruqaa/400.css';
-import '@fontsource/aref-ruqaa/700.css';
+import '@fontsource/lalezar';
 import '@fontsource-variable/readex-pro';
-import '@fontsource-variable/fraunces';
 import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 import { LANGS, path, switchLang, useT, dirOf, type Lang, type PageKey } from '../i18n';
@@ -47,12 +45,6 @@ const hotel = {
 </head>
 <body>
   <a class="skip" href="#main">{t('nav.skip')}</a>
-  <div class="strip" id="strip" hidden>
-    <div class="wrap strip-in">
-      <span>{t('strip.sunset')} <b class="num" id="sunset"></b></span>
-      <span>{t('strip.sea')} <b class="num" id="sea"></b></span>
-    </div>
-  </div>
   <header class="hdr">
     <div class="wrap hdr-in">
       <a class="brand" href={path(lang)}>
@@ -62,7 +54,7 @@ const hotel = {
       <nav class="nav" aria-label="Main">
         <a href={`${home}#book`}>{t('nav.book')}</a>
         <a href={`${home}#room`}>{t('nav.room')}</a>
-        <a href={`${home}#around`}>{t('nav.around')}</a>
+        <a href={`${home}#day`}>{t('nav.around')}</a>
         <a href={path(lang, 'mine')} aria-current={page === 'mine' ? 'page' : undefined}>{t('nav.mine')}</a>
         <a href="#contact">{t('nav.contact')}</a>
       </nav>

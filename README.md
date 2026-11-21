@@ -3,6 +3,15 @@
 Website and booking system for the lodge. Arabic at the root, English under `/en/`. Astro, built in the
 same way as `giza-pyramids-view-guest-house`.
 
+## Design (version 2, 2026-11-21)
+
+A travel poster in the lodge's own colours (whitewash, the cobalt of its railings, pool turquoise, one sun
+yellow; Lalezar for display type). The page runs from the lodge wall down to the reef: cobalt wall with the
+key board hanging on it and the price on a sun, the pool photo, "Sharm, today" (sunset, daylight, sea
+temperature), prices and the bill, the room, the lodge drawn at the waterline, then under the water "a day
+from the lodge door" with fish and coral. Pitch: "Sleep here. Spend the rest on the sea." Version 1 (quiet
+white layout) is the git tag `v1`.
+
 ## State
 
 Steps 1 and 2 of 4: the home page, the booking page (details, review, confirmation with the booking

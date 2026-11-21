@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import Layout from '../components/Layout.astro';
 import Railing from '../components/Railing.astro';
 import LodgeScene from '../components/LodgeScene.astro';
+import Reef from '../components/Reef.astro';
 import RoomPlan from '../components/RoomPlan.astro';
 import PlanIcon from '../components/PlanIcon.astro';
 import Folio from '../components/Folio.astro';
@@ -16,67 +17,90 @@ import room2 from '../assets/photos/room2.jpg';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const { t, branch } = useT(lang);
-const strings = { rack: branch('rack'), folio: branch('folio'), plans: branch('plans') };
+const strings = { rack: branch('rack'), folio: branch('folio'), plans: branch('plans'), today: branch('today') };
 const slots = Array.from({ length: SITE.rooms }, (_, i) => i + 1);
+const tilt = (n: number) => ((n * 37) % 9) - 4; // each key hangs a little differently
 const spec = ['bed', 'guests', 'view', 'ac', 'minibar', 'tv'];
-const WALK_SPAN = 16; // minutes the walking line covers
+const place = (w: (typeof WALKS)[number]) => (lang === 'ar' ? w.ar : w.en);
+const dive = WALKS[0];
+const rays = Array.from({ length: 18 }, (_, i) => i * 20);
 ---
 <Layout lang={lang} page="home" title={t('meta.title')} desc={t('meta.desc', { price: money(FROM_PRICE) })}>
   <script type="application/json" id="strings" set:html={JSON.stringify(strings)} />
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="key" viewBox="0 0 24 60">
-      <circle cx="12" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="3.4" />
-      <path d="M12 16V56M12 40H19M12 48H17M12 56H19" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="12" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="3.6" />
+      <path d="M12 16V56M12 40H19M12 48H17M12 56H19" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
     </symbol>
   </svg>
 
-  <section class="hero wrap" id="book">
-    <div class="hero-text">
-      <p class="kicker">{t('hero.kicker')}</p>
-      <h1>{t('hero.h1', { price: money(FROM_PRICE) })}</h1>
-      <p class="lead">{t('hero.lead')}</p>
-      <form class="bar" id="bar" onsubmit="return false">
-        <label><span>{t('bar.in')}</span><input type="date" id="f-in" required /></label>
-        <label><span>{t('bar.out')}</span><input type="date" id="f-out" required /></label>
-        <label class="bar-rooms"><span>{t('bar.rooms')}</span>
-          <select id="f-rooms">{Array.from({ length: MAX_ROOMS }, (_, i) => <option value={i + 1}>{i + 1}</option>)}</select>
-        </label>
-      </form>
-      <p class="count" id="count" role="status" aria-live="polite"></p>
-    </div>
-
-    <div class="rack" aria-labelledby="rack-title">
-      <div class="rack-head">
-        <h2 id="rack-title">{t('rack.title')}</h2>
-        <span class="rack-dates num" id="rack-dates"></span>
+  <section class="hero" id="book">
+    <div class="wrap hero-in">
+      <div class="hero-text">
+        <p class="kicker">{t('hero.kicker')}</p>
+        <h1><span>{t('hero.h1a')}</span> <span class="hl">{t('hero.h1b')}</span></h1>
+        <p class="hero-lead">{t('hero.lead', { price: money(FROM_PRICE) })}</p>
+        <form class="bar" id="bar" onsubmit="return false">
+          <label><span>{t('bar.in')}</span><input type="date" id="f-in" required /></label>
+          <label><span>{t('bar.out')}</span><input type="date" id="f-out" required /></label>
+          <label class="bar-rooms"><span>{t('bar.rooms')}</span>
+            <select id="f-rooms">{Array.from({ length: MAX_ROOMS }, (_, i) => <option value={i + 1}>{i + 1}</option>)}</select>
+          </label>
+        </form>
+        <p class="count" id="count" role="status" aria-live="polite"></p>
       </div>
-      <ol class="slots" id="slots">
-        {slots.map((n) => (
-          <li class="slot" data-room={n} style={`--i:${n}`}>
-            <span class="plate num">{n}</span>
-            <span class="hook"></span>
-            <svg class="key" width="20" height="50"><use href="#key" /></svg>
-          </li>
-        ))}
-      </ol>
-      <ul class="legend">
-        <li><svg class="key" width="10" height="25"><use href="#key" /></svg>{t('rack.legendFree')}</li>
-        <li><svg class="key mine" width="10" height="25"><use href="#key" /></svg>{t('rack.legendMine')}</li>
-        <li><span class="hook"></span>{t('rack.legendTaken')}</li>
-      </ul>
+
+      <div class="rack-wrap">
+        <p class="sunprice">
+          <svg viewBox="-80 -80 160 160" aria-hidden="true"><g class="rays">{rays.map((a) => <path d="M0 -62V-76" transform={`rotate(${a})`} />)}</g><circle r="56" /></svg>
+          <span>{t('sticker.from')}</span><b>{money(FROM_PRICE)}</b><span>{t('sticker.unit')}</span>
+        </p>
+        <svg class="rope" viewBox="0 0 260 64" aria-hidden="true"><path d="M14 62L130 10L246 62" /><circle cx="130" cy="9" r="6" /></svg>
+        <div class="rack" aria-labelledby="rack-title">
+          <div class="rack-head">
+            <h2 id="rack-title">{t('rack.title')}</h2>
+            <span class="rack-dates" id="rack-dates"></span>
+          </div>
+          <ol class="slots" id="slots">
+            {slots.map((n) => (
+              <li class="slot" data-room={n} style={`--i:${n};--tilt:${tilt(n)}deg`}>
+                <span class="hook"></span>
+                <span class="label num">{n}</span>
+                <span class="hang"><span class="fob num">{n}</span><svg class="key" width="18" height="45"><use href="#key" /></svg></span>
+              </li>
+            ))}
+          </ol>
+          <ul class="legend">
+            <li><span class="fob"></span>{t('rack.legendFree')}</li>
+            <li><span class="fob mine"></span>{t('rack.legendMine')}</li>
+            <li><span class="hook"></span>{t('rack.legendTaken')}</li>
+          </ul>
+        </div>
+      </div>
     </div>
+    <div class="hero-rail"><Railing /></div>
   </section>
 
   <figure class="poolshot wrap">
     <Image src={pool} alt={t('photo.pool')} widths={[480, 800, 1280]} sizes="(min-width: 1240px) 1176px, 100vw" format="avif" quality={64} loading="eager" />
-    <figcaption>{t('photo.caption')}</figcaption>
+    <figcaption>{t('photo.note')}</figcaption>
   </figure>
 
-  <Railing />
+  <section class="today">
+    <div class="wrap">
+      <h2>{t('today.title')}</h2>
+      <dl class="facts">
+        <div><dd id="fact-sunset">–</dd><dt>{t('today.sunset')}</dt></div>
+        <div><dd id="fact-day">–</dd><dt>{t('today.daylight')}</dt></div>
+        <div><dd id="fact-sea">–</dd><dt>{t('today.sea')}</dt></div>
+        <div><dd>{t('today.diveV', { n: dive.min })}</dd><dt>{t('today.dive')}</dt></div>
+      </dl>
+    </div>
+  </section>
 
   <section class="plans wrap">
     <div class="plans-main">
-      <h2>{t('plans.title')}</h2>
+      <h2 class="sq">{t('plans.title')}</h2>
       <p class="lead">{t('plans.lead')}</p>
       <div class="cards" role="radiogroup" aria-label={t('plans.title')}>
         {PLANS.map((p) => (
@@ -85,11 +109,14 @@ const WALK_SPAN = 16; // minutes the walking line covers
             <PlanIcon id={p.id} />
             <span class="card-name">{t(`plans.${p.id}`)}</span>
             <span class="card-note">{t(`plans.${p.id}Note`)}</span>
-            <span class="card-price"><b class="num">{money(p.price)}</b> {t('plans.unit')}</span>
-            <span class="card-total num" data-total={p.id}></span>
+            <span class="card-price"><b>{money(p.price)}</b> {t('plans.unit')}</span>
+            <span class="card-total" data-total={p.id}></span>
           </label>
         ))}
       </div>
+      <ol class="direct-list" aria-label={t('direct.title')}>
+        {['a', 'b', 'c'].map((k) => <li><b>{t(`direct.${k}`)}</b><span>{t(`direct.${k}T`)}</span></li>)}
+      </ol>
     </div>
 
     <Folio lang={lang}>
@@ -97,50 +124,54 @@ const WALK_SPAN = 16; // minutes the walking line covers
     </Folio>
   </section>
 
-  <Railing />
-
-  <section class="room wrap" id="room">
-    <div class="room-text">
-      <h2>{t('room.title')}</h2>
-      <p class="lead">{t('room.lead')}</p>
-      <dl class="spec">
-        {spec.map((k) => <div><dt>{t(`room.${k}`)}</dt><dd>{t(`room.${k}V`)}</dd></div>)}
-      </dl>
-    </div>
-    <div class="room-side">
-    <RoomPlan lang={lang} />
-    <div class="room-photos">
-      <Image src={room2} alt={t('room.alt1')} widths={[420, 720, 1100]} sizes="(min-width: 900px) 420px, 92vw" format="avif" quality={62} />
-      <Image src={room} alt={t('room.alt2')} widths={[320, 520, 900]} sizes="(min-width: 900px) 240px, 60vw" format="avif" quality={62} />
-    </div>
-    </div>
-  </section>
-
-  <section class="around" id="around">
-    <div class="wrap">
-      <h2>{t('around.title')}</h2>
-      <p class="lead">{t('around.lead')}</p>
-      <ol class="walk">
-        <li class="walk-door" style="--at:0"><b>{t('around.door')}</b></li>
-        {WALKS.map((w, i) => (
-          <li class:list={[i % 2 ? 'below' : 'above']} style={`--at:${(w.min / WALK_SPAN).toFixed(3)}`}>
-            <span class="walk-min num">{t('around.min', { n: w.min })}</span>
-            <b>{lang === 'ar' ? w.ar : w.en}</b>
-            <small>{lang === 'ar' ? w.kindAr : w.kindEn}</small>
-          </li>
-        ))}
-      </ol>
-      <p class="airport">{t('around.airport')}</p>
+  <section class="room" id="room">
+    <div class="wrap room-in">
+      <div class="room-text">
+        <h2 class="sq">{t('room.title')}</h2>
+        <p class="lead">{t('room.lead')}</p>
+        <dl class="spec">
+          {spec.map((k) => <div><dt>{t(`room.${k}`)}</dt><dd>{t(`room.${k}V`)}</dd></div>)}
+        </dl>
+      </div>
+      <div class="room-side">
+        <RoomPlan lang={lang} />
+        <div class="room-photos">
+          <Image src={room2} alt={t('room.alt1')} widths={[420, 720, 1100]} sizes="(min-width: 900px) 420px, 92vw" format="avif" quality={62} />
+          <Image src={room} alt={t('room.alt2')} widths={[320, 520, 900]} sizes="(min-width: 900px) 240px, 60vw" format="avif" quality={62} />
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="direct wrap">
-    <h2>{t('direct.title')}</h2>
-    <ol class="direct-list">
-      {['a', 'b', 'c'].map((k) => <li><b>{t(`direct.${k}`)}</b><span>{t(`direct.${k}T`)}</span></li>)}
-    </ol>
-  </section>
   <LodgeScene />
+
+  <section class="day" id="day">
+    <Reef />
+    <div class="wrap day-in">
+      <h2>{t('day.title')}</h2>
+      <p class="day-lead">{t('day.lead')}</p>
+      <ol class="day-list">
+        <li>
+          <span class="when">{t('day.am')}</span>
+          <h3>{t('day.amT')}</h3>
+          <p>{t('day.amB')}</p>
+          <ul class="chips"><li>{place(dive)} · {t('day.walk', { n: dive.min })}</li></ul>
+        </li>
+        <li>
+          <span class="when">{t('day.pm')}</span>
+          <h3>{t('day.pmT')}</h3>
+          <p>{t('day.pmB')}</p>
+        </li>
+        <li>
+          <span class="when">{t('day.eve')}</span>
+          <h3>{t('day.eveT')}</h3>
+          <p>{t('day.eveB')}</p>
+          <ul class="chips">{WALKS.slice(1).map((w) => <li>{place(w)} · {t('day.walk', { n: w.min })}</li>)}</ul>
+        </li>
+      </ol>
+      <p class="trips"><b>{t('day.trips')}</b> {t('day.tripsT')} {t('day.airport')}</p>
+    </div>
+  </section>
 </Layout>
 
 <script>
@@ -158,13 +189,13 @@ const WALK_SPAN = 16; // minutes the walking line covers
   const count = $('#count'), cta = $<HTMLAnchorElement>('#cta');
   const FEW = 3; // say "last rooms" from this many down
 
-  // header strip: today's sunset and the month's usual sea temperature
+  // "Sharm, today": sunset, hours of daylight and the month's usual sea temperature
   const now = new Date();
   const offset = cairoOffsetHours(now);
   const sun = sunTimes(now, SITE.geo.lat, SITE.geo.lng, offset);
-  $('#sunset').textContent = hhmm(sun.set);
-  $('#sea').textContent = `${SEA_TEMP[now.getMonth()]}°`;
-  $('#strip').hidden = false;
+  $('#fact-sunset').textContent = hhmm(sun.set);
+  $('#fact-day').textContent = ((sun.set - sun.rise) / 60).toFixed(1);
+  $('#fact-sea').textContent = `${SEA_TEMP[now.getMonth()]}°`;
   // the drawing of the lodge: the sun sits where it is in Sharm's sky right now; after dark, the moon
   const clock = ((now.getUTCHours() + offset) * 60 + now.getUTCMinutes()) % 1440;
   const day = (clock - sun.rise) / (sun.set - sun.rise);

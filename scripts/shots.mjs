@@ -13,7 +13,7 @@ for (const [lang, url] of [['ar', '/'], ['en', '/en/']]) for (const w of [390, 1
   await page.goto(base + url, { waitUntil: 'networkidle' });
   await page.waitForTimeout(1500);
   const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-  const info = await page.evaluate(() => ({ count: document.querySelector('#count').textContent, total: document.querySelector('[data-f=total]').textContent, stay: document.querySelector('[data-f=stay]').textContent, sunset: document.querySelector('#sunset').textContent }));
+  const info = await page.evaluate(() => ({ count: document.querySelector('#count').textContent, total: document.querySelector('[data-f=total]').textContent, stay: document.querySelector('[data-f=stay]').textContent, sunset: document.querySelector('#fact-sunset').textContent }));
   await page.screenshot({ path: `${out}/${lang}-${w}.png`, fullPage: true });
   console.log(lang, w, 'overflow', over, 'errors', errors.length ? errors : 'none', JSON.stringify(info));
   await page.close();
