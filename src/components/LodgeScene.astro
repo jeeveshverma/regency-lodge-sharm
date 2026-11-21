@@ -1,0 +1,81 @@
+---
+/**
+ * The lodge drawn from its pool photo: the two-storey block with its blue trim, stairs and scalloped
+ * railing, the low block beside it, umbrellas, palms and the pool. The page script moves the sun along
+ * its arc for the time of day in Sharm and swaps it for the moon at night.
+ */
+const bays = [0, 1, 2, 3, 4];
+const stairs = [0, 1, 2];
+const umbrellas = [118, 300, 486, 742, 930];
+const palms = [628, 1108];
+const rail = Array.from({ length: 20 }, (_, i) => `M${40 + i * 28} 160q14 -26 28 0`).join('');
+const wave = (y: number, step: number, amp: number) => `M0 ${y}` + Array.from({ length: Math.ceil(1200 / step) }, (_, i) => `${i ? 't' : `q${step / 2} ${-amp} `}${step} 0`).join('') + 'V340H0Z';
+---
+<div class="scene" aria-hidden="true">
+  <svg viewBox="0 0 1200 340" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <path class="arc" d="M60 150Q600 -90 1140 150" />
+    <circle class="sun" id="sun" cx="600" cy="30" r="15" />
+    <path class="moon" id="moon" d="M0 -15a15 15 0 1 0 13 22a12 12 0 0 1 -13 -22z" transform="translate(980 54)" hidden />
+
+    <!-- the low block -->
+    <rect class="wall" x="672" y="150" width="488" height="100" />
+    <path class="trim" d="M662 150H1170" />
+    {[0, 1, 2, 3, 4, 5, 6].map((i) => <rect class="door" x={700 + i * 64} y="192" width="22" height="58" />)}
+    {[0, 1, 2, 3, 4, 5].map((i) => <rect class="pane" x={732 + i * 64} y="198" width="24" height="24" />)}
+
+    <!-- the two-storey block -->
+    <rect class="wall" x="40" y="70" width="560" height="180" />
+    <path class="trim" d="M30 70H610" />
+    {bays.map((i) => (
+      <g>
+        <rect class="pane" x={64 + i * 110} y="96" width="24" height="64" />
+        <rect class="pane" x={100 + i * 110} y="100" width="34" height="30" />
+        <rect class="pane" x={64 + i * 110} y="186" width="24" height="64" />
+        <rect class="pane" x={100 + i * 110} y="190" width="34" height="30" />
+      </g>
+    ))}
+    <path class="line" d="M40 160H600M40 139H600" />
+    <path class="line thin" d={rail} />
+    {stairs.map((i) => <path class="stair" d={`M${146 + i * 110} 250L${196 + i * 110} 160`} />)}
+
+    {palms.map((x) => (
+      <g class="palm">
+        <path class="trunk" d={`M${x} 250q10 -70 -4 -150`} />
+        <path d={`M${x - 4} 100q-40 -26 -70 2M${x - 4} 100q-34 -4 -52 34M${x - 4} 100q-8 -40 -44 -48M${x - 4} 100q40 -26 70 2M${x - 4} 100q34 -4 52 34M${x - 4} 100q10 -40 46 -46`} />
+      </g>
+    ))}
+    {umbrellas.map((x) => (
+      <g>
+        <path class="line" d={`M${x} 250V206`} />
+        <path class="brolly" d={`M${x - 36} 212Q${x} 172 ${x + 36} 212Z`} />
+        <path class="bed" d={`M${x + 44} 244h30l10 -12`} />
+      </g>
+    ))}
+    <path class="line" d="M0 250H1200" />
+
+    <path class="water" d={wave(276, 150, 10)} />
+    <path class="ripple" d="M90 296h70M330 304h90M610 294h60M860 302h100M1080 296h50" />
+    <path class="deep" d={wave(324, 100, 9)} />
+  </svg>
+</div>
+<style>
+  .scene { overflow: hidden; margin-top: 8px; }
+  .scene svg { display: block; width: 100%; height: max(190px, calc(100vw * 340 / 1200)); /* whole drawing on wide screens; phones crop the sides */ max-width: none; }
+  .wall { fill: var(--white); stroke: var(--cobalt); stroke-width: 2; }
+  .trim { stroke: var(--cobalt); stroke-width: 9; }
+  .line { fill: none; stroke: var(--cobalt); stroke-width: 2.4; }
+  .thin { stroke-width: 1.6; }
+  .pane { fill: var(--pool-pale); stroke: var(--cobalt); stroke-width: 1.6; }
+  .door { fill: var(--cobalt); }
+  .stair { stroke: var(--cobalt); stroke-width: 9; stroke-linecap: square; }
+  .palm path { fill: none; stroke: var(--cobalt-deep); stroke-width: 3; stroke-linecap: round; }
+  .palm .trunk { stroke-width: 6; }
+  .brolly { fill: var(--white); stroke: var(--cobalt); stroke-width: 2.4; stroke-linejoin: round; }
+  .bed { fill: none; stroke: var(--cobalt); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .arc { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 2 9; stroke-linecap: round; }
+  .sun { fill: var(--brass); }
+  .moon { fill: var(--cobalt); }
+  .water { fill: var(--pool); }
+  .ripple { stroke: var(--white); stroke-width: 2.4; stroke-linecap: round; opacity: 0.75; }
+  .deep { fill: var(--cobalt); }
+</style>

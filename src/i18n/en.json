@@ -64,6 +64,10 @@
     "ac": "Air conditioning", "acV": "In every room",
     "minibar": "Minibar", "minibarV": "In the room",
     "tv": "Television", "tvV": "In the room",
+    "double": "One double", "twin": "Two singles",
+    "planAlt": "The room drawn from above: beds, wardrobe, minibar, television and the door onto the pool",
+    "planNote": "A sketch of the room, not to scale.",
+    "pPool": "Pool", "pAc": "AC", "pWardrobe": "Wardrobe", "pMinibar": "Minibar", "pTv": "TV",
     "alt1": "Room with two beds, wardrobe and television", "alt2": "Room with two beds and two windows"
   },
   "around": {

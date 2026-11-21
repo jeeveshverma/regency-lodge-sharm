@@ -2,6 +2,9 @@
 import { Image } from 'astro:assets';
 import Layout from '../components/Layout.astro';
 import Railing from '../components/Railing.astro';
+import LodgeScene from '../components/LodgeScene.astro';
+import RoomPlan from '../components/RoomPlan.astro';
+import PlanIcon from '../components/PlanIcon.astro';
 import { useT, type Lang } from '../i18n';
 import { SITE, PLANS, WALKS, FROM_PRICE } from '../data/site';
 import { MAX_ROOMS, money } from '../lib/stay';
@@ -79,6 +82,7 @@ const WALK_SPAN = 16; // minutes the walking line covers
         {PLANS.map((p) => (
           <label class="card">
             <input type="radio" name="plan" value={p.id} />
+            <PlanIcon id={p.id} />
             <span class="card-name">{t(`plans.${p.id}`)}</span>
             <span class="card-note">{t(`plans.${p.id}Note`)}</span>
             <span class="card-price"><b class="num">{money(p.price)}</b> {t('plans.unit')}</span>
@@ -118,9 +122,12 @@ const WALK_SPAN = 16; // minutes the walking line covers
         {spec.map((k) => <div><dt>{t(`room.${k}`)}</dt><dd>{t(`room.${k}V`)}</dd></div>)}
       </dl>
     </div>
+    <div class="room-side">
+    <RoomPlan lang={lang} />
     <div class="room-photos">
       <Image src={room2} alt={t('room.alt1')} widths={[420, 720, 1100]} sizes="(min-width: 900px) 420px, 92vw" format="avif" quality={62} />
       <Image src={room} alt={t('room.alt2')} widths={[320, 520, 900]} sizes="(min-width: 900px) 240px, 60vw" format="avif" quality={62} />
+    </div>
     </div>
   </section>
 
@@ -148,12 +155,13 @@ const WALK_SPAN = 16; // minutes the walking line covers
       {['a', 'b', 'c'].map((k) => <li><b>{t(`direct.${k}`)}</b><span>{t(`direct.${k}T`)}</span></li>)}
     </ol>
   </section>
+  <LodgeScene />
 </Layout>
 
 <script>
   import { readStay, writeStay, quote, money, fmtDate, plural, iso, parse, plusDays, type Stay } from '../lib/stay';
   import { freeRooms } from '../lib/avail';
-  import { sunset } from '../lib/sun';
+  import { sunTimes, hhmm, cairoOffsetHours } from '../lib/sun';
   import { SITE, SEA_TEMP, PLANS } from '../data/site';
 
   const lang = document.documentElement.lang;
@@ -167,7 +175,19 @@ const WALK_SPAN = 16; // minutes the walking line covers
 
   // header strip: today's sunset and the month's usual sea temperature
   const now = new Date();
-  $('#sunset').textContent = sunset(now, SITE.geo.lat, SITE.geo.lng);
+  const offset = cairoOffsetHours(now);
+  const sun = sunTimes(now, SITE.geo.lat, SITE.geo.lng, offset);
+  $('#sunset').textContent = hhmm(sun.set);
+  // the drawing of the lodge: the sun sits where it is in Sharm's sky right now; after dark, the moon
+  const clock = ((now.getUTCHours() + offset) * 60 + now.getUTCMinutes()) % 1440;
+  const day = (clock - sun.rise) / (sun.set - sun.rise);
+  const sunEl = document.getElementById('sun'), moonEl = document.getElementById('moon');
+  if (sunEl && moonEl) {
+    if (day >= 0 && day <= 1) { // a point on the dotted arc M60 150 Q600 -90 1140 150
+      sunEl.setAttribute('cx', String(60 + 1080 * day));
+      sunEl.setAttribute('cy', String(150 - 480 * day * (1 - day)));
+    } else { sunEl.setAttribute('hidden', ''); moonEl.removeAttribute('hidden'); }
+  }
   $('#sea').textContent = `${SEA_TEMP[now.getMonth()]}°`;
   $('#strip').hidden = false;
 

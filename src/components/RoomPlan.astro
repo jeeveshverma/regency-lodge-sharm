@@ -1,0 +1,75 @@
+---
+/**
+ * The room from above, drawn from its two photos: beds against one wall under a shared headboard,
+ * dresser and television opposite, wardrobe and minibar by the door to the pool. The guest switches
+ * between one double bed and two singles. A sketch, not a measured plan.
+ */
+import { useT, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { t } = useT(Astro.props.lang);
+---
+<figure class="plan" data-bed="twin">
+  <div class="plan-pick" role="radiogroup" aria-label={t('room.bed')}>
+    <button type="button" role="radio" aria-checked="false" data-set="double">{t('room.double')}</button>
+    <button type="button" role="radio" aria-checked="true" data-set="twin">{t('room.twin')}</button>
+  </div>
+  <svg viewBox="0 0 400 300" role="img" aria-label={t('room.planAlt')}>
+    <!-- the pool outside the terrace door -->
+    <path class="pwater" d="M20 26q10 -8 20 0t20 0t20 0t20 0t20 0t20 0t20 0M20 14q10 -8 20 0t20 0t20 0t20 0t20 0t20 0t20 0" />
+    <text x="200" y="24">{t('room.pPool')}</text>
+
+    <rect class="pwall" x="20" y="40" width="360" height="240" />
+    <path class="pgap" d="M56 40h56M150 280h52" />
+    <path class="pthin" d="M56 40v52a52 52 0 0 0 52 -52M150 280v-48a48 48 0 0 1 48 48" />
+    <path class="pglass" d="M150 40h80" />
+
+    <rect class="pfill" x="164" y="46" width="52" height="9" /><text class="psm" x="190" y="70">{t('room.pAc')}</text>
+    <rect class="pbox" x="292" y="48" width="80" height="34" /><path class="pthin" d="M292 48l80 34" /><text x="332" y="100">{t('room.pWardrobe')}</text>
+    <rect class="pbox" x="252" y="52" width="30" height="30" /><text class="psm" x="267" y="100">{t('room.pMinibar')}</text>
+    <rect class="pbox" x="28" y="116" width="26" height="116" /><path class="ptv" d="M33 150v48" /><text x="78" y="178">{t('room.pTv')}</text>
+    <rect class="phead" x="364" y="108" width="9" height="160" />
+
+    <g class="bed-twin">
+      <rect class="pbed" x="256" y="114" width="108" height="62" rx="4" /><rect class="ppillow" x="336" y="123" width="20" height="44" rx="4" />
+      <rect class="pbox" x="340" y="180" width="24" height="16" />
+      <rect class="pbed" x="256" y="200" width="108" height="62" rx="4" /><rect class="ppillow" x="336" y="209" width="20" height="44" rx="4" />
+    </g>
+    <g class="bed-double">
+      <rect class="pbed" x="256" y="130" width="108" height="116" rx="4" />
+      <rect class="ppillow" x="336" y="138" width="20" height="46" rx="4" /><rect class="ppillow" x="336" y="192" width="20" height="46" rx="4" />
+      <rect class="pbox" x="340" y="112" width="24" height="15" /><rect class="pbox" x="340" y="249" width="24" height="15" />
+    </g>
+  </svg>
+  <figcaption>{t('room.planNote')}</figcaption>
+</figure>
+<script>
+  for (const plan of document.querySelectorAll<HTMLElement>('.plan')) {
+    const buttons = [...plan.querySelectorAll<HTMLButtonElement>('[data-set]')];
+    for (const b of buttons) b.addEventListener('click', () => {
+      plan.dataset.bed = b.dataset.set;
+      for (const x of buttons) x.setAttribute('aria-checked', String(x === b));
+    });
+  }
+</script>
+<style>
+  .plan { margin: 0; }
+  .plan-pick { display: inline-flex; border: 2px solid var(--cobalt); margin-bottom: 12px; }
+  .plan-pick button { font: inherit; border: 0; background: var(--white); color: var(--cobalt); padding: 7px 18px; font-size: 0.92rem; cursor: pointer; }
+  .plan-pick button[aria-checked='true'] { background: var(--cobalt); color: #fff; }
+  .plan svg { width: 100%; height: auto; background: var(--plaster); border: 1px solid var(--line); direction: ltr; }
+  .plan text { font: 500 11.5px var(--sans); fill: var(--cobalt); text-anchor: middle; }
+  .plan .psm { font-size: 10px; }
+  .pwall { fill: var(--white); stroke: var(--cobalt); stroke-width: 5; }
+  .pgap { stroke: var(--white); stroke-width: 7; }
+  .pglass { stroke: var(--pool); stroke-width: 3; }
+  .pthin, .pwater { fill: none; stroke: var(--cobalt); stroke-width: 1.4; }
+  .pwater { stroke: var(--pool); stroke-width: 2; stroke-linecap: round; }
+  .pbox { fill: var(--white); stroke: var(--cobalt); stroke-width: 1.6; }
+  .pfill { fill: var(--pool-pale); stroke: var(--cobalt); stroke-width: 1.4; }
+  .ptv { stroke: var(--ink); stroke-width: 5; stroke-linecap: round; }
+  .phead { fill: var(--cobalt); }
+  .pbed { fill: var(--pool-pale); stroke: var(--cobalt); stroke-width: 2; }
+  .ppillow { fill: var(--white); stroke: var(--cobalt); stroke-width: 1.4; }
+  .plan[data-bed='twin'] .bed-double, .plan[data-bed='double'] .bed-twin { display: none; }
+  .plan figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+</style>
