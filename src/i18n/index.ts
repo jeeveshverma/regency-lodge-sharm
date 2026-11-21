@@ -10,8 +10,8 @@ export const LANGS: { code: Lang; name: string; dir: 'ltr' | 'rtl'; ogLocale: st
 ];
 export const dirOf = (lang: Lang) => LANGS.find((l) => l.code === lang)!.dir;
 
-export type PageKey = 'home';
-const SLUG: Record<PageKey, string> = { home: '' };
+export type PageKey = 'home' | 'book' | 'mine';
+const SLUG: Record<PageKey, string> = { home: '', book: 'book/', mine: 'booking/' };
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
 
 export const path = (lang: Lang, page: PageKey = 'home') => `${BASE}${lang === 'en' ? 'en/' : ''}${SLUG[page]}`;

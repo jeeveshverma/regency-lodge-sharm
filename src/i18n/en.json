@@ -3,14 +3,29 @@
     "title": "Regency Lodge, Sharm El Sheikh | Book your room direct",
     "desc": "Twenty double rooms around the pool in El Hadaba, Sharm El Sheikh. From EGP {price} per room per night. See which rooms are free and book direct; pay on arrival."
   },
-  "nav": { "book": "Book", "room": "The room", "around": "Around", "contact": "Contact", "lang": "العربية", "skip": "Skip to content" },
-  "strip": { "sunset": "Sunset in Sharm today", "sea": "Average sea temperature this month" },
+  "nav": {
+    "book": "Book",
+    "room": "The room",
+    "around": "Around",
+    "contact": "Contact",
+    "lang": "العربية",
+    "skip": "Skip to content",
+    "mine": "My booking"
+  },
+  "strip": {
+    "sunset": "Sunset in Sharm today",
+    "sea": "Average sea temperature this month"
+  },
   "hero": {
     "kicker": "El Hadaba · Sharm El Sheikh",
     "h1": "A room on the pool, EGP {price} a night.",
     "lead": "Twenty rooms, all the same kind, and three plain prices. Pick your dates and see which keys are still hanging on the board."
   },
-  "bar": { "in": "Check-in", "out": "Check-out", "rooms": "Rooms" },
+  "bar": {
+    "in": "Check-in",
+    "out": "Check-out",
+    "rooms": "Rooms"
+  },
   "rack": {
     "title": "The key board",
     "free": "Available for your dates",
@@ -20,9 +35,13 @@
     "legendFree": "Key hanging: room free",
     "legendTaken": "Empty hook: booked",
     "legendMine": "Blue key: yours",
-    "roomLabel": "Room {n}"
+    "roomLabel": "Room {n}",
+    "error": "Could not check availability: {msg}"
   },
-  "photo": { "pool": "The pool with the rooms looking onto it", "caption": "The pool sits in the middle of the lodge, and every room looks onto it." },
+  "photo": {
+    "pool": "The pool with the rooms looking onto it",
+    "caption": "The pool sits in the middle of the lodge, and every room looks onto it."
+  },
   "plans": {
     "title": "Three prices, nothing hidden",
     "lead": "Per room, per night, in Egyptian pounds. Choose what suits you.",
@@ -51,22 +70,33 @@
     "cta": "Book now",
     "onRequest": "Prices for these dates are not published yet.",
     "ask": "Ask us on WhatsApp",
-    "soon": "The booking page comes in the next step.",
     "waAsk": "Hello, I would like the price of a room at Regency Lodge from {in} to {out}."
   },
   "room": {
     "title": "The room",
     "lead": "A standard double room looking onto the pool. All twenty rooms are the same kind, so there are no surprises when you arrive.",
-    "bed": "Bed", "bedV": "One double or two singles, your choice",
-    "guests": "Sleeps", "guestsV": "2 adults and 2 children",
-    "view": "View", "viewV": "The pool",
-    "ac": "Air conditioning", "acV": "In every room",
-    "minibar": "Minibar", "minibarV": "In the room",
-    "tv": "Television", "tvV": "In the room",
-    "double": "One double", "twin": "Two singles",
+    "bed": "Bed",
+    "bedV": "One double or two singles, your choice",
+    "guests": "Sleeps",
+    "guestsV": "2 adults and 2 children",
+    "view": "View",
+    "viewV": "The pool",
+    "ac": "Air conditioning",
+    "acV": "In every room",
+    "minibar": "Minibar",
+    "minibarV": "In the room",
+    "tv": "Television",
+    "tvV": "In the room",
+    "double": "One double",
+    "twin": "Two singles",
     "planAlt": "The room drawn from above: beds, wardrobe, minibar, television and the door onto the pool",
-    "pPool": "Pool", "pAc": "AC", "pWardrobe": "Wardrobe", "pMinibar": "Minibar", "pTv": "TV",
-    "alt1": "Room with two beds, wardrobe and television", "alt2": "Room with two beds and two windows"
+    "pPool": "Pool",
+    "pAc": "AC",
+    "pWardrobe": "Wardrobe",
+    "pMinibar": "Minibar",
+    "pTv": "TV",
+    "alt1": "Room with two beds, wardrobe and television",
+    "alt2": "Room with two beds and two windows"
   },
   "around": {
     "title": "A short walk away",
@@ -77,10 +107,80 @@
   },
   "direct": {
     "title": "Why book here?",
-    "a": "The same price", "aT": "What you see here is what you hear on the phone and what you pay at reception.",
-    "b": "No deposit", "bT": "We hold your room at once, and you pay on arrival.",
-    "c": "The lodge answers", "cT": "You talk to reception directly, not to an agent."
+    "a": "The same price",
+    "aT": "What you see here is what you hear on the phone and what you pay at reception.",
+    "b": "No deposit",
+    "bT": "We hold your room at once, and you pay on arrival.",
+    "c": "The lodge answers",
+    "cT": "You talk to reception directly, not to an agent."
   },
-  "contact": { "title": "Contact", "phone": "Phone", "email": "Email", "address": "Address", "whatsapp": "WhatsApp" },
-  "foot": { "rights": "Regency Lodge, Sharm El Sheikh" }
+  "contact": {
+    "title": "Contact",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "whatsapp": "WhatsApp"
+  },
+  "foot": {
+    "rights": "Regency Lodge, Sharm El Sheikh"
+  },
+  "book": {
+    "metaTitle": "Complete your booking | Regency Lodge",
+    "title": "Complete your booking",
+    "s1": "Your details",
+    "s2": "Review",
+    "s3": "Booked",
+    "change": "Change dates or rooms",
+    "name": "Full name",
+    "phone": "Phone number (WhatsApp)",
+    "email": "Email (optional)",
+    "adults": "Adults",
+    "children": "Children",
+    "bed": "Bed",
+    "arrival": "Expected arrival time",
+    "arr1": "Before 2 pm",
+    "arr2": "2 pm to 6 pm",
+    "arr3": "6 pm to 10 pm",
+    "arr4": "After 10 pm",
+    "note": "Notes (optional)",
+    "next": "Continue to review",
+    "back": "Back to edit details",
+    "confirm": "Confirm booking",
+    "errName": "Enter your full name.",
+    "errPhone": "Enter a valid phone number.",
+    "errEmail": "That email address is not valid.",
+    "reviewTitle": "Review your booking",
+    "guest": "Guest",
+    "party": "Guests",
+    "partyV": "Adults: {a} · Children: {c}",
+    "times": "Check-in from {in} · Check-out by {out}",
+    "payNote": "You pay at reception on arrival. We ask for no card and no deposit.",
+    "blockedRooms": "These dates are no longer free for the number of rooms you asked for.",
+    "blockedPrice": "Prices for these dates are not published yet.",
+    "toHome": "Back to choose dates",
+    "errNoRooms": "Sorry, the room was taken a moment ago. Choose other dates.",
+    "errStorage": "The booking could not be saved in this browser. Try another browser or message us on WhatsApp.",
+    "errUnknown": "Something went wrong: {msg}",
+    "doneTitle": "Your booking is recorded",
+    "doneLead": "Keep your booking number, then send the booking to the lodge on WhatsApp so reception can confirm it.",
+    "ref": "Booking number",
+    "sendWa": "Send the booking on WhatsApp",
+    "viewMine": "View my booking",
+    "waHead": "New booking from the Regency Lodge website",
+    "payWa": "Pay on arrival",
+    "noteShort": "Notes"
+  },
+  "mine": {
+    "metaTitle": "My booking | Regency Lodge",
+    "title": "My booking",
+    "lead": "Enter your booking number and the phone number you booked with.",
+    "find": "Show my booking",
+    "notFound": "No booking matches these details. Check the booking number and the phone number.",
+    "status": "Status",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "cancel": "Cancel this booking",
+    "cancelSure": "Press again to confirm the cancellation",
+    "cancelledMsg": "The booking is cancelled."
+  }
 }

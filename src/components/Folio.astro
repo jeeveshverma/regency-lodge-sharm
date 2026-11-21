@@ -1,0 +1,24 @@
+---
+/** The bill: dates, nights and rooms, meal plan, rate and total. lib/ui.ts `fillFolio` fills it; buttons go in the slot. */
+import { useT, type Lang } from '../i18n';
+import { SITE } from '../data/site';
+interface Props { lang: Lang }
+const { t } = useT(Astro.props.lang);
+---
+<aside class="folio" aria-labelledby="folio-title">
+  <header>
+    <h3 id="folio-title">{t('folio.title')}</h3>
+    <p><span lang="ar">{SITE.name.ar}</span> · <span lang="en">Regency Lodge</span></p>
+  </header>
+  <dl>
+    <div><dt>{t('folio.in')}</dt><dd data-f="in"></dd></div>
+    <div><dt>{t('folio.out')}</dt><dd data-f="out"></dd></div>
+    <div><dt>{t('folio.stay')}</dt><dd data-f="stay"></dd></div>
+    <div><dt>{t('folio.plan')}</dt><dd data-f="plan"></dd></div>
+    <div data-priced><dt>{t('folio.rate')}</dt><dd class="num" data-f="rate"></dd></div>
+    <div class="folio-total" data-priced><dt>{t('folio.total')}</dt><dd><b class="num" data-f="total"></b> {t('folio.egp')}</dd></div>
+  </dl>
+  <p class="folio-pay" data-priced>{t('folio.pay')}</p>
+  <p class="folio-req" data-onreq hidden>{t('folio.onRequest')}</p>
+  <slot />
+</aside>

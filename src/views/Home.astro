@@ -5,7 +5,8 @@ import Railing from '../components/Railing.astro';
 import LodgeScene from '../components/LodgeScene.astro';
 import RoomPlan from '../components/RoomPlan.astro';
 import PlanIcon from '../components/PlanIcon.astro';
-import { useT, type Lang } from '../i18n';
+import Folio from '../components/Folio.astro';
+import { useT, path, type Lang } from '../i18n';
 import { SITE, PLANS, WALKS, FROM_PRICE } from '../data/site';
 import { MAX_ROOMS, money } from '../lib/stay';
 import pool from '../assets/photos/pool.jpg';
@@ -20,7 +21,7 @@ const slots = Array.from({ length: SITE.rooms }, (_, i) => i + 1);
 const spec = ['bed', 'guests', 'view', 'ac', 'minibar', 'tv'];
 const WALK_SPAN = 16; // minutes the walking line covers
 ---
-<Layout lang={lang} title={t('meta.title')} desc={t('meta.desc', { price: money(FROM_PRICE) })}>
+<Layout lang={lang} page="home" title={t('meta.title')} desc={t('meta.desc', { price: money(FROM_PRICE) })}>
   <script type="application/json" id="strings" set:html={JSON.stringify(strings)} />
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="key" viewBox="0 0 24 60">
@@ -91,24 +92,9 @@ const WALK_SPAN = 16; // minutes the walking line covers
       </div>
     </div>
 
-    <aside class="folio" aria-labelledby="folio-title">
-      <header>
-        <h3 id="folio-title">{t('folio.title')}</h3>
-        <p><span lang="ar">{SITE.name.ar}</span> · <span lang="en">Regency Lodge</span></p>
-      </header>
-      <dl>
-        <div><dt>{t('folio.in')}</dt><dd data-f="in"></dd></div>
-        <div><dt>{t('folio.out')}</dt><dd data-f="out"></dd></div>
-        <div><dt>{t('folio.stay')}</dt><dd data-f="stay"></dd></div>
-        <div><dt>{t('folio.plan')}</dt><dd data-f="plan"></dd></div>
-        <div data-priced><dt>{t('folio.rate')}</dt><dd class="num" data-f="rate"></dd></div>
-        <div class="folio-total" data-priced><dt>{t('folio.total')}</dt><dd><b class="num" data-f="total"></b> {t('folio.egp')}</dd></div>
-      </dl>
-      <p class="folio-pay" data-priced>{t('folio.pay')}</p>
-      <p class="folio-req" id="onreq" hidden>{t('folio.onRequest')}</p>
-      <a class="btn" id="cta" href="#book">{t('folio.cta')}</a>
-      <p class="folio-soon" id="soon" hidden>{t('folio.soon')}</p>
-    </aside>
+    <Folio lang={lang}>
+      <a class="btn" id="cta" href={path(lang, 'book')} data-book={path(lang, 'book')}>{t('folio.cta')}</a>
+    </Folio>
   </section>
 
   <Railing />
@@ -158,49 +144,59 @@ const WALK_SPAN = 16; // minutes the walking line covers
 </Layout>
 
 <script>
-  import { readStay, writeStay, quote, money, fmtDate, plural, iso, parse, plusDays, type Stay } from '../lib/stay';
-  import { freeRooms } from '../lib/avail';
+  import { readStay, writeStay, quote, money, fmtDate, plural, iso, parse, plusDays, stayQuery, type Stay } from '../lib/stay';
+  import { availability } from '../lib/api';
   import { sunTimes, hhmm, cairoOffsetHours } from '../lib/sun';
+  import { $, fill, fillFolio, strings } from '../lib/ui';
   import { SITE, SEA_TEMP, PLANS } from '../data/site';
 
   const lang = document.documentElement.lang;
-  const S = JSON.parse(document.getElementById('strings')!.textContent!) as Record<'rack' | 'folio' | 'plans', Record<string, string>>;
-  const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
+  const S = strings();
   const fIn = $<HTMLInputElement>('#f-in'), fOut = $<HTMLInputElement>('#f-out'), fRooms = $<HTMLSelectElement>('#f-rooms');
   const slots = [...document.querySelectorAll<HTMLElement>('.slot')];
   const radios = [...document.querySelectorAll<HTMLInputElement>('input[name=plan]')];
-  const field = (k: string) => $(`[data-f=${k}]`);
-  const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k) => String(v[k]));
+  const count = $('#count'), cta = $<HTMLAnchorElement>('#cta');
+  const FEW = 3; // say "last rooms" from this many down
 
   // header strip: today's sunset and the month's usual sea temperature
   const now = new Date();
   const offset = cairoOffsetHours(now);
   const sun = sunTimes(now, SITE.geo.lat, SITE.geo.lng, offset);
   $('#sunset').textContent = hhmm(sun.set);
+  $('#sea').textContent = `${SEA_TEMP[now.getMonth()]}°`;
+  $('#strip').hidden = false;
   // the drawing of the lodge: the sun sits where it is in Sharm's sky right now; after dark, the moon
   const clock = ((now.getUTCHours() + offset) * 60 + now.getUTCMinutes()) % 1440;
   const day = (clock - sun.rise) / (sun.set - sun.rise);
-  const sunEl = document.getElementById('sun'), moonEl = document.getElementById('moon');
-  if (sunEl && moonEl) {
-    if (day >= 0 && day <= 1) { // a point on the dotted arc M60 150 Q600 -90 1140 150
-      sunEl.setAttribute('cx', String(60 + 1080 * day));
-      sunEl.setAttribute('cy', String(150 - 480 * day * (1 - day)));
-    } else { sunEl.setAttribute('hidden', ''); moonEl.removeAttribute('hidden'); }
-  }
-  $('#sea').textContent = `${SEA_TEMP[now.getMonth()]}°`;
-  $('#strip').hidden = false;
+  const sunEl = $('#sun'), moonEl = $('#moon');
+  if (day >= 0 && day <= 1) { // a point on the dotted arc M60 150 Q600 -90 1140 150
+    sunEl.setAttribute('cx', String(60 + 1080 * day));
+    sunEl.setAttribute('cy', String(150 - 480 * day * (1 - day)));
+  } else { sunEl.setAttribute('hidden', ''); moonEl.removeAttribute('hidden'); }
 
-  const FEW = 3; // say "last rooms" from this many down
   let stay = readStay();
   fIn.min = iso(new Date());
 
-  function render(animate = true) {
+  async function render() {
     fIn.value = stay.in; fOut.value = stay.out; fRooms.value = String(stay.rooms);
     fOut.min = iso(plusDays(parse(stay.in), 1));
     for (const r of radios) r.checked = r.value === stay.plan;
+    $('#rack-dates').textContent = `${fmtDate(stay.in, lang)} – ${fmtDate(stay.out, lang)}`;
+
+    // prices on the three cards and on the bill
+    for (const p of PLANS) {
+      const pq = quote(stay, p.id);
+      $(`[data-total=${p.id}]`).textContent = pq.onRequest ? '' : fill(S.plans.total, { total: money(pq.total) });
+    }
+    const q = fillFolio(document, stay, S, lang);
 
     // the key board
-    const free = freeRooms(stay);
+    let free: number[];
+    try { free = await availability(stay); } catch (e) {
+      count.textContent = fill(S.rack.error, { msg: e instanceof Error ? e.message : String(e) });
+      count.classList.add('warn');
+      throw e;
+    }
     const enough = free.length >= stay.rooms;
     const mine = new Set(enough ? free.slice(0, stay.rooms) : []);
     for (const el of slots) {
@@ -211,36 +207,21 @@ const WALK_SPAN = 16; // minutes the walking line covers
       el.classList.remove('swing');
       el.setAttribute('aria-label', `${fill(S.rack.roomLabel, { n })}: ${isFree ? S.rack.legendFree : S.rack.legendTaken}`);
     }
-    if (animate) { void document.body.offsetWidth; for (const el of slots) el.classList.add('swing'); }
-    const count = $('#count');
+    void document.body.offsetWidth; // restart the swing
+    for (const el of slots) el.classList.add('swing');
     // no running count of free rooms: the guest learns whether there is a room, and when only a few are left
     count.textContent = !free.length ? S.rack.none : !enough ? fill(S.rack.short, { n: free.length }) : free.length <= FEW ? plural(S.rack.few, free.length, lang) : S.rack.free;
     count.classList.toggle('warn', !enough);
-    $('#rack-dates').textContent = `${fmtDate(stay.in, lang)} – ${fmtDate(stay.out, lang)}`;
 
-    // prices on the three cards and on the bill
-    const q = quote(stay);
-    for (const p of PLANS) {
-      const pq = quote(stay, p.id);
-      $(`[data-total=${p.id}]`).textContent = pq.onRequest ? '' : fill(S.plans.total, { total: money(pq.total) });
-    }
-    field('in').textContent = fmtDate(stay.in, lang);
-    field('out').textContent = fmtDate(stay.out, lang);
-    field('stay').textContent = `${plural(S.folio.nights, q.nights, lang)} × ${plural(S.folio.roomsN, stay.rooms, lang)}`;
-    field('plan').textContent = S.plans[stay.plan];
-    field('rate').textContent = money(q.rate);
-    field('total').textContent = money(q.total);
-    for (const el of document.querySelectorAll<HTMLElement>('[data-priced]')) el.hidden = q.onRequest;
-    $('#onreq').hidden = !q.onRequest;
-    $('#soon').hidden = true;
-    const cta = $<HTMLAnchorElement>('#cta');
+    // the button: on to the booking page, or WhatsApp when the dates have no price yet
+    const off = !q.onRequest && !enough;
     cta.textContent = q.onRequest ? S.folio.ask : S.folio.cta;
     cta.href = q.onRequest
       ? `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(fill(S.folio.waAsk, { in: fmtDate(stay.in, lang), out: fmtDate(stay.out, lang) }))}`
-      : '#book';
+      : `${cta.dataset.book}?${stayQuery(stay)}`;
     cta.target = q.onRequest ? '_blank' : '';
-    cta.classList.toggle('off', !q.onRequest && !enough);
-    cta.setAttribute('aria-disabled', String(!q.onRequest && !enough));
+    cta.classList.toggle('off', off);
+    cta.setAttribute('aria-disabled', String(off));
   }
 
   const update = (patch: Partial<Stay>) => { stay = writeStay({ ...stay, ...patch }); render(); };
@@ -252,12 +233,10 @@ const WALK_SPAN = 16; // minutes the walking line covers
   fOut.addEventListener('change', () => fOut.value && update({ out: fOut.value }));
   fRooms.addEventListener('change', () => update({ rooms: Number(fRooms.value) }));
   for (const r of radios) r.addEventListener('change', () => update({ plan: r.value as Stay['plan'] }));
-  $('#cta').addEventListener('click', (e) => {
-    const cta = e.currentTarget as HTMLAnchorElement;
-    if (cta.target === '_blank') return;
-    e.preventDefault();
-    if (cta.classList.contains('off')) { $('#bar').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
-    $('#soon').hidden = false; // design preview: the booking page is the next step
+  cta.addEventListener('click', (e) => {
+    if (!cta.classList.contains('off')) return;
+    e.preventDefault(); // not enough rooms: back to the dates
+    $('#bar').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
   render();

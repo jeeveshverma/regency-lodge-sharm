@@ -228,3 +228,47 @@ html[lang='ar'] .direct-list b { font-weight: 700; }
 .foot-rights { margin-top: 36px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.25); font-size: 0.82rem; color: #b9d2f5; }
 @media (min-width: 700px) { .foot-list { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1000px) { .foot-list { grid-template-columns: repeat(4, auto); justify-content: space-between; } }
+
+/* ---------- booking pages ---------- */
+.book { padding-block: 36px 70px; }
+.book-title { font-size: clamp(2rem, 6vw, 3rem); }
+.steps { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--cobalt); color: var(--muted); font-size: 0.95rem; scroll-margin-top: 84px; }
+.steps li { display: flex; align-items: center; gap: 8px; }
+.steps .num { display: grid; place-items: center; width: 28px; height: 28px; background: var(--pool-pale); color: var(--muted); border-radius: 2px; font-size: 0.85rem; }
+.steps .on { color: var(--ink); font-weight: 500; }
+.steps .on .num, .steps .past .num { background: var(--cobalt); color: #fff; }
+.book-grid { display: grid; gap: 36px; margin-top: 30px; }
+@media (min-width: 1000px) { .book-grid { grid-template-columns: minmax(0, 1.6fr) minmax(300px, 1fr); gap: 56px; align-items: start; } .book-grid .folio { position: sticky; top: 96px; } }
+.form { display: grid; gap: 16px 20px; }
+@media (min-width: 620px) { .form { grid-template-columns: 1fr 1fr; } .f-wide { grid-column: 1 / -1; } }
+.form label { display: flex; flex-direction: column; gap: 5px; font-size: 0.9rem; color: var(--muted); }
+.form :is(input, select, textarea) { font: 400 1.02rem var(--sans); color: var(--ink); background: var(--white); border: 2px solid var(--line); padding: 11px 12px; border-radius: 0; width: 100%; min-height: 48px; }
+.form :is(input, select, textarea):focus-visible { outline: none; border-color: var(--cobalt); }
+.form [aria-invalid='true'] { border-color: var(--warn); }
+.form-stay { grid-column: 1 / -1; background: var(--pool-pale); padding: 12px 14px; color: var(--ink); display: flex; flex-wrap: wrap; gap: 4px 16px; justify-content: space-between; }
+.form-stay b { font-weight: 500; }
+.form-stay a { color: var(--cobalt); font-size: 0.92rem; }
+.err { color: var(--warn); font-size: 0.85rem; min-height: 1.2em; }
+.form .btn, .review .btn, .done .btn { border: 0; width: 100%; cursor: pointer; font-family: inherit; }
+.btn[disabled] { background: var(--line); color: var(--muted); cursor: default; }
+.blocked { background: #fbeee9; color: var(--warn); border-inline-start: 4px solid var(--warn); padding: 12px 14px; }
+.blocked a { color: inherit; font-weight: 500; }
+.review h2, .done h2 { font-size: clamp(1.6rem, 4.6vw, 2.2rem); }
+.review-note { margin-top: 14px; font-size: 0.95rem; }
+.review .spec { margin-top: 18px; }
+.review .spec dd { overflow-wrap: anywhere; }
+.is-cancelled { color: var(--warn) !important; }
+.link { display: block; margin: 14px auto 0; background: none; border: 0; color: var(--cobalt); font: inherit; font-size: 0.95rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; text-align: center; }
+.btn-wa { background: #1f7a4d; }
+.btn-wa:hover { background: #176038; }
+.btn-danger { background: var(--white); color: var(--warn); border: 2px solid var(--warn) !important; }
+.btn-danger:hover { background: #fbeee9; }
+/* the booking number on a key tag */
+.tag { display: flex; align-items: flex-start; gap: 4px; margin: 30px 0 26px; padding-inline-start: 8px; }
+.tag-key { color: var(--brass); rotate: -14deg; flex: none; margin-top: 6px; }
+[dir='rtl'] .tag-key { rotate: 14deg; }
+.tag-plate { position: relative; background: var(--white); border: 3px solid var(--cobalt); outline: 1px solid var(--cobalt); outline-offset: -8px; padding: 20px 26px 18px 44px; display: flex; flex-direction: column; rotate: 2deg; box-shadow: 8px 8px 0 var(--pool-pale); }
+[dir='rtl'] .tag-plate { rotate: -2deg; padding: 20px 44px 18px 26px; box-shadow: -8px 8px 0 var(--pool-pale); }
+.tag-plate::before { content: ''; position: absolute; inset-inline-start: 16px; top: 50%; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; border: 3px solid var(--brass); }
+.tag-plate span { font-size: 0.8rem; color: var(--muted); }
+.tag-plate b { font-size: clamp(1.7rem, 7vw, 2.4rem); color: var(--cobalt); letter-spacing: 0.04em; line-height: 1.2; }

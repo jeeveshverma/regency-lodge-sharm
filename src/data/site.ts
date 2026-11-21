@@ -9,6 +9,8 @@ export const SITE = {
   city: { ar: 'شرم الشيخ، جنوب سيناء', en: 'Sharm El Sheikh, South Sinai' },
   geo: { lat: 27.865, lng: 34.295 }, // El Hadaba, approximate: used only for the sunset time
   rooms: 20,
+  checkIn: '14:00', // to confirm with the owner
+  checkOut: '12:00', // to confirm with the owner
 };
 
 export type PlanId = 'ro' | 'bb' | 'hb';

@@ -1,10 +1,18 @@
 ---
-import { LANGS, type Lang } from '../i18n';
+import { LANGS, type Lang, type PageKey } from '../i18n';
 import Home from '../views/Home.astro';
+import Book from '../views/Book.astro';
+import Mine from '../views/Mine.astro';
 
 export function getStaticPaths() {
-  return LANGS.map(({ code }) => ({ params: { path: code === 'en' ? 'en' : undefined }, props: { lang: code } }));
+  const pages: [PageKey, string][] = [['home', ''], ['book', 'book'], ['mine', 'booking']];
+  return LANGS.flatMap(({ code }) => pages.map(([page, slug]) => ({
+    params: { path: [code === 'en' ? 'en' : '', slug].filter(Boolean).join('/') || undefined },
+    props: { lang: code, page },
+  })));
 }
-const { lang } = Astro.props as { lang: Lang };
+const { lang, page } = Astro.props as { lang: Lang; page: PageKey };
 ---
-<Home lang={lang} />
+{page === 'home' && <Home lang={lang} />}
+{page === 'book' && <Book lang={lang} />}
+{page === 'mine' && <Mine lang={lang} />}

@@ -1,0 +1,221 @@
+---
+/** The booking page: the guest's details, a review, then the confirmation with the booking number on a key tag. */
+import Layout from '../components/Layout.astro';
+import Folio from '../components/Folio.astro';
+import { useT, path, type Lang } from '../i18n';
+import { SITE } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, branch } = useT(lang);
+const strings = { folio: branch('folio'), plans: branch('plans'), book: branch('book'), room: branch('room') };
+const steps = ['s1', 's2', 's3'];
+const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
+---
+<Layout lang={lang} page="book" title={t('book.metaTitle')} desc={t('book.title')} noindex>
+  <script type="application/json" id="strings" set:html={JSON.stringify(strings)} />
+  <div class="wrap book" data-home={path(lang)} data-mine={path(lang, 'mine')}>
+    <h1 class="book-title">{t('book.title')}</h1>
+    <ol class="steps" id="steps">
+      {steps.map((s, i) => <li data-step={i + 1}><span class="num">{i + 1}</span>{t(`book.${s}`)}</li>)}
+    </ol>
+
+    <div class="book-grid">
+      <div class="book-main">
+        <p class="blocked" id="blocked" role="alert" hidden><span id="blocked-msg"></span> <a id="blocked-link" href={path(lang)}>{t('book.toHome')}</a></p>
+
+        <form class="form" id="step-1" novalidate hidden>
+          <p class="form-stay"><b id="stay-line"></b> <a id="change" href={path(lang)}>{t('book.change')}</a></p>
+          <label class="f-wide">{t('book.name')}<input id="g-name" name="name" autocomplete="name" required /><span class="err" data-err="name"></span></label>
+          <label>{t('book.phone')}<input id="g-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" required /><span class="err" data-err="phone"></span></label>
+          <label>{t('book.email')}<input id="g-email" name="email" type="email" autocomplete="email" dir="ltr" /><span class="err" data-err="email"></span></label>
+          <label>{t('book.adults')}<select id="g-adults" name="adults"></select></label>
+          <label>{t('book.children')}<select id="g-children" name="children"></select></label>
+          <label>{t('book.bed')}
+            <select id="g-bed" name="bed"><option value="double">{t('room.double')}</option><option value="twin">{t('room.twin')}</option></select>
+          </label>
+          <label>{t('book.arrival')}
+            <select id="g-arrival" name="arrival">{arrivals.map((a) => <option value={a} selected={a === 'arr2'}>{t(`book.${a}`)}</option>)}</select>
+          </label>
+          <label class="f-wide">{t('book.note')}<textarea id="g-note" name="note" rows="3"></textarea></label>
+          <button class="btn f-wide" type="submit">{t('book.next')}</button>
+        </form>
+
+        <section class="review" id="step-2" hidden>
+          <h2>{t('book.reviewTitle')}</h2>
+          <dl class="spec">
+            <div><dt>{t('book.guest')}</dt><dd data-r="guest"></dd></div>
+            <div><dt>{t('book.party')}</dt><dd data-r="party"></dd></div>
+            <div><dt>{t('book.bed')}</dt><dd data-r="bed"></dd></div>
+            <div><dt>{t('book.arrival')}</dt><dd data-r="arrival"></dd></div>
+            <div data-r-row="note"><dt>{t('book.noteShort')}</dt><dd data-r="note"></dd></div>
+          </dl>
+          <p class="review-note">{t('book.times', { in: SITE.checkIn, out: SITE.checkOut })}</p>
+          <p class="review-note">{t('book.payNote')}</p>
+          <p class="blocked" id="err" role="alert" hidden></p>
+          <button class="btn" id="confirm" type="button">{t('book.confirm')}</button>
+          <button class="link" id="back" type="button">{t('book.back')}</button>
+        </section>
+
+        <section class="done" id="step-3" hidden>
+          <h2>{t('book.doneTitle')}</h2>
+          <p class="lead">{t('book.doneLead')}</p>
+          <div class="tag">
+            <svg class="tag-key" width="34" height="85" aria-hidden="true"><use href="#key" /></svg>
+            <div class="tag-plate"><span>{t('book.ref')}</span><b class="num" id="ref" dir="ltr"></b></div>
+          </div>
+          <a class="btn btn-wa" id="send-wa" target="_blank" rel="noopener">{t('book.sendWa')}</a>
+          <a class="link" id="view-mine">{t('book.viewMine')}</a>
+        </section>
+      </div>
+
+      <Folio lang={lang} />
+    </div>
+  </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="key" viewBox="0 0 24 60">
+      <circle cx="12" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="3.4" />
+      <path d="M12 16V56M12 40H19M12 48H17M12 56H19" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+  </svg>
+</Layout>
+
+<script>
+  import { readStay, stayQuery, fmtDate, money, quote } from '../lib/stay';
+  import { availability, createBooking, BookingError, phoneKey, type Booking, type Guest } from '../lib/api';
+  import { $, fill, fillFolio, stayLine, strings } from '../lib/ui';
+  import { SITE } from '../data/site';
+
+  const lang = document.documentElement.lang;
+  const S = strings();
+  const B = S.book;
+  const root = $('.book');
+  const stay = readStay();
+  const q = fillFolio(document, stay, S, lang);
+  const DRAFT = 'rl-guest';
+
+  const panels = [1, 2, 3].map((n) => $(`#step-${n}`));
+  function show(n: number, scroll = true) {
+    panels.forEach((p, i) => { p.hidden = i + 1 !== n; });
+    for (const li of document.querySelectorAll<HTMLElement>('#steps li')) {
+      const k = Number(li.dataset.step);
+      li.classList.toggle('on', k === n);
+      li.classList.toggle('past', k < n);
+    }
+    if (scroll) $('#steps').scrollIntoView({ block: 'start' });
+  }
+  function block(msg: string) {
+    panels.forEach((p) => { p.hidden = true; });
+    $('#blocked-msg').textContent = msg;
+    $('#blocked').hidden = false;
+  }
+  const homeLink = `${root.dataset.home}?${stayQuery(stay)}#book`;
+  $<HTMLAnchorElement>('#change').href = homeLink;
+  $<HTMLAnchorElement>('#blocked-link').href = homeLink;
+  $('#stay-line').textContent = `${fmtDate(stay.in, lang)} – ${fmtDate(stay.out, lang)} · ${stayLine(stay, q.nights, S, lang)}`;
+
+  // party sizes: up to two adults and two children a room
+  const options = (sel: HTMLSelectElement, from: number, to: number, pick: number) => {
+    for (let i = from; i <= to; i++) sel.add(new Option(String(i), String(i), false, i === pick));
+  };
+  const form = $<HTMLFormElement>('#step-1');
+  options($<HTMLSelectElement>('#g-adults'), 1, stay.rooms * 2, stay.rooms * 2);
+  options($<HTMLSelectElement>('#g-children'), 0, stay.rooms * 2, 0);
+
+  // a draft of the form survives a reload or a trip back to change the dates
+  try {
+    const d = JSON.parse(sessionStorage.getItem(DRAFT) || '{}') as Record<string, string>;
+    for (const [k, v] of Object.entries(d)) {
+      const el = form.elements.namedItem(k) as HTMLInputElement | HTMLSelectElement | null;
+      if (el && (el.tagName !== 'SELECT' || [...(el as HTMLSelectElement).options].some((o) => o.value === v))) el.value = v;
+    }
+  } catch { /* no draft to restore */ }
+
+  function readGuest(): Guest {
+    const v = (k: string) => (form.elements.namedItem(k) as HTMLInputElement).value.trim();
+    return { name: v('name'), phone: v('phone'), email: v('email'), adults: Number(v('adults')), children: Number(v('children')), bed: v('bed') as Guest['bed'], arrival: v('arrival'), note: v('note') };
+  }
+  function validate(g: Guest): boolean {
+    const errors: Record<string, string> = {
+      name: g.name.length < 3 ? B.errName : '',
+      phone: phoneKey(g.phone).length < 8 || phoneKey(g.phone).length > 14 ? B.errPhone : '',
+      email: g.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(g.email) ? B.errEmail : '',
+    };
+    let first: HTMLElement | null = null;
+    for (const [k, msg] of Object.entries(errors)) {
+      const input = form.elements.namedItem(k) as HTMLInputElement;
+      $(`[data-err=${k}]`).textContent = msg;
+      input.setAttribute('aria-invalid', String(!!msg));
+      if (msg && !first) first = input;
+    }
+    first?.focus();
+    return !first;
+  }
+
+  let guest: Guest;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    guest = readGuest();
+    if (!validate(guest)) return;
+    try { sessionStorage.setItem(DRAFT, JSON.stringify(guest)); } catch { /* the draft is a convenience only */ }
+    const set = (k: string, v: string) => { $(`[data-r=${k}]`).textContent = v; };
+    set('guest', `${guest.name} · ${guest.phone}${guest.email ? ` · ${guest.email}` : ''}`);
+    set('party', fill(B.partyV, { a: guest.adults, c: guest.children }));
+    set('bed', S.room[guest.bed]);
+    set('arrival', B[guest.arrival]);
+    set('note', guest.note);
+    $('[data-r-row=note]').hidden = !guest.note;
+    $('#err').hidden = true;
+    show(2);
+  });
+  $('#back').addEventListener('click', () => show(1));
+
+  function waText(b: Booking): string {
+    return [
+      B.waHead,
+      `${B.ref}: ${b.ref}`,
+      `${B.guest}: ${b.name}, ${b.phone}`,
+      `${S.folio.in}: ${fmtDate(b.in, lang)}`,
+      `${S.folio.out}: ${fmtDate(b.out, lang)}`,
+      `${S.folio.stay}: ${stayLine(b, b.nights, S, lang)}`,
+      `${S.folio.plan}: ${S.plans[b.plan]}`,
+      `${B.bed}: ${S.room[b.bed]}`,
+      fill(B.partyV, { a: b.adults, c: b.children }),
+      `${B.arrival}: ${B[b.arrival]}`,
+      `${S.folio.total}: ${money(b.total)} ${S.folio.egp} (${B.payWa})`,
+      b.note ? `${B.noteShort}: ${b.note}` : '',
+    ].filter(Boolean).join('\n');
+  }
+
+  const confirm = $<HTMLButtonElement>('#confirm');
+  confirm.addEventListener('click', async () => {
+    confirm.disabled = true;
+    const err = $('#err');
+    try {
+      const b = await createBooking(stay, guest);
+      try { sessionStorage.removeItem(DRAFT); } catch { /* nothing to clear */ }
+      $('#ref').textContent = b.ref;
+      $<HTMLAnchorElement>('#send-wa').href = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(waText(b))}`;
+      $<HTMLAnchorElement>('#view-mine').href = `${root.dataset.mine}?ref=${encodeURIComponent(b.ref)}`;
+      show(3);
+    } catch (e) {
+      const code = e instanceof BookingError ? e.code : '';
+      err.textContent = code === 'no_rooms' ? B.errNoRooms : code === 'on_request' ? B.blockedPrice : code === 'storage' ? B.errStorage : fill(B.errUnknown, { msg: e instanceof Error ? e.message : String(e) });
+      err.hidden = false;
+      confirm.disabled = false;
+      if (!code) throw e;
+    }
+  });
+
+  // open on the form, unless the stay cannot be booked as it stands
+  (async () => {
+    if (quote(stay).onRequest) return block(B.blockedPrice);
+    try {
+      if ((await availability(stay)).length < stay.rooms) return block(B.blockedRooms);
+    } catch (e) {
+      block(e instanceof BookingError && e.code === 'storage' ? B.errStorage : fill(B.errUnknown, { msg: e instanceof Error ? e.message : String(e) }));
+      throw e;
+    }
+    show(1, false);
+  })();
+</script>

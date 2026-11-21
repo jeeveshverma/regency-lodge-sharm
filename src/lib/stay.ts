@@ -49,6 +49,9 @@ export function writeStay(s: Partial<Stay>): Stay {
   return n;
 }
 
+/** The stay as a query string, for links between pages. */
+export const stayQuery = (s: Stay) => new URLSearchParams({ in: s.in, out: s.out, rooms: String(s.rooms), plan: s.plan }).toString();
+
 /** The nights of a stay, as the date each night starts. */
 export function nightDates(s: Stay): string[] {
   const out: string[] = [];

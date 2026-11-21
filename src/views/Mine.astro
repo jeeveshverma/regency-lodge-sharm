@@ -1,0 +1,93 @@
+---
+/** "My booking": the guest opens a booking with its number and phone, and can cancel it. */
+import Layout from '../components/Layout.astro';
+import Folio from '../components/Folio.astro';
+import { useT, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, branch } = useT(lang);
+const strings = { folio: branch('folio'), plans: branch('plans'), book: branch('book'), room: branch('room'), mine: branch('mine') };
+---
+<Layout lang={lang} page="mine" title={t('mine.metaTitle')} desc={t('mine.lead')} noindex>
+  <script type="application/json" id="strings" set:html={JSON.stringify(strings)} />
+  <div class="wrap book">
+    <h1 class="book-title">{t('mine.title')}</h1>
+    <p class="lead">{t('mine.lead')}</p>
+    <div class="book-grid">
+      <div class="book-main">
+        <form class="form" id="find" novalidate>
+          <label>{t('book.ref')}<input id="m-ref" name="ref" dir="ltr" autocapitalize="characters" autocomplete="off" required /></label>
+          <label>{t('book.phone')}<input id="m-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" required /></label>
+          <p class="blocked f-wide" id="m-err" role="alert" hidden></p>
+          <button class="btn f-wide" type="submit">{t('mine.find')}</button>
+        </form>
+
+        <section class="review" id="found" hidden>
+          <dl class="spec">
+            <div><dt>{t('book.ref')}</dt><dd class="num" data-m="ref" dir="ltr"></dd></div>
+            <div><dt>{t('mine.status')}</dt><dd data-m="status"></dd></div>
+            <div><dt>{t('book.guest')}</dt><dd data-m="guest"></dd></div>
+            <div><dt>{t('book.party')}</dt><dd data-m="party"></dd></div>
+            <div><dt>{t('book.bed')}</dt><dd data-m="bed"></dd></div>
+            <div><dt>{t('book.arrival')}</dt><dd data-m="arrival"></dd></div>
+          </dl>
+          <p class="review-note" id="m-msg" role="status"></p>
+          <button class="btn btn-danger" id="cancel" type="button">{t('mine.cancel')}</button>
+        </section>
+      </div>
+      <div id="m-folio" hidden><Folio lang={lang} /></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { findBooking, cancelBooking, BookingError, type Booking } from '../lib/api';
+  import { $, fill, fillFolio, strings } from '../lib/ui';
+
+  const lang = document.documentElement.lang;
+  const S = strings();
+  const M = S.mine, B = S.book;
+  const form = $<HTMLFormElement>('#find'), err = $('#m-err'), cancel = $<HTMLButtonElement>('#cancel');
+  const ref = $<HTMLInputElement>('#m-ref'), phone = $<HTMLInputElement>('#m-phone');
+  ref.value = new URLSearchParams(location.search).get('ref') ?? '';
+
+  function fail(e: unknown) {
+    const code = e instanceof BookingError ? e.code : '';
+    err.textContent = code === 'not_found' ? M.notFound : code === 'storage' ? B.errStorage : fill(B.errUnknown, { msg: e instanceof Error ? e.message : String(e) });
+    err.hidden = false;
+    if (!code) throw e;
+  }
+
+  function showBooking(b: Booking) {
+    const set = (k: string, v: string) => { $(`[data-m=${k}]`).textContent = v; };
+    set('ref', b.ref);
+    set('status', M[b.status]);
+    set('guest', `${b.name} · ${b.phone}`);
+    set('party', fill(B.partyV, { a: b.adults, c: b.children }));
+    set('bed', S.room[b.bed]);
+    set('arrival', B[b.arrival]);
+    $('[data-m=status]').classList.toggle('is-cancelled', b.status === 'cancelled');
+    fillFolio($('#m-folio'), b, S, lang);
+    $('#m-folio').hidden = false;
+    $('#found').hidden = false;
+    cancel.hidden = b.status === 'cancelled';
+    cancel.textContent = M.cancel;
+    cancel.dataset.armed = '';
+    $('#m-msg').textContent = b.status === 'cancelled' ? M.cancelledMsg : '';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    err.hidden = true;
+    $('#found').hidden = true;
+    $('#m-folio').hidden = true;
+    try { showBooking(await findBooking(ref.value, phone.value)); } catch (x) { fail(x); }
+  });
+
+  // cancelling takes two presses: the first arms the button
+  cancel.addEventListener('click', async () => {
+    if (!cancel.dataset.armed) { cancel.dataset.armed = '1'; cancel.textContent = M.cancelSure; return; }
+    try { showBooking(await cancelBooking(ref.value, phone.value)); } catch (x) { fail(x); }
+  });
+</script>
