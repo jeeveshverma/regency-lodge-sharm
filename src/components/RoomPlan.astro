@@ -40,7 +40,6 @@ const { t } = useT(Astro.props.lang);
       <rect class="pbox" x="340" y="112" width="24" height="15" /><rect class="pbox" x="340" y="249" width="24" height="15" />
     </g>
   </svg>
-  <figcaption>{t('room.planNote')}</figcaption>
 </figure>
 <script>
   for (const plan of document.querySelectorAll<HTMLElement>('.plan')) {
@@ -71,5 +70,4 @@ const { t } = useT(Astro.props.lang);
   .pbed { fill: var(--pool-pale); stroke: var(--cobalt); stroke-width: 2; }
   .ppillow { fill: var(--white); stroke: var(--cobalt); stroke-width: 1.4; }
   .plan[data-bed='twin'] .bed-double, .plan[data-bed='double'] .bed-twin { display: none; }
-  .plan figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
 </style>

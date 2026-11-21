@@ -108,7 +108,6 @@ html[lang='ar'] .rack-dates { font-family: var(--sans); }
 .legend li { display: flex; align-items: center; gap: 7px; }
 .legend .key { margin: 0; }
 .legend .hook { margin: 0; }
-.demo { margin: 10px 6px 0; font-size: 0.74rem; color: var(--muted); }
 @media (min-width: 560px) { .slots { grid-template-columns: repeat(10, 1fr); } .rack { padding: 28px 24px 20px; } }
 @media (min-width: 1000px) {
   .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 56px; align-items: center; padding-block: 64px 60px; }
