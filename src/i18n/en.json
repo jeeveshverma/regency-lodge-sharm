@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "title": "Regency Lodge, Sharm El Sheikh | Book your room direct",
+    "desc": "Twenty double rooms around the pool in El Hadaba, Sharm El Sheikh. From EGP 1,500 per room per night. See which rooms are free and book direct; pay on arrival."
+  },
+  "nav": { "book": "Book", "room": "The room", "around": "Around", "contact": "Contact", "lang": "العربية", "skip": "Skip to content" },
+  "strip": { "sunset": "Sunset in Sharm today", "sea": "Average sea temperature this month" },
+  "hero": {
+    "kicker": "El Hadaba · Sharm El Sheikh",
+    "h1": "Twenty rooms around the pool.",
+    "lead": "One kind of room, three plain prices. Pick your dates and look at the key board: every key still hanging is a room waiting for you."
+  },
+  "bar": { "in": "Check-in", "out": "Check-out", "rooms": "Rooms" },
+  "rack": {
+    "title": "The key board",
+    "free": "{n} of 20 rooms free",
+    "none": "No rooms are free on these dates. Try other dates.",
+    "short": "Only {n} free on these dates. Ask for fewer rooms or change the dates.",
+    "legendFree": "Key hanging: room free",
+    "legendTaken": "Empty hook: booked",
+    "legendMine": "Blue key: yours",
+    "demo": "Design preview: availability shown here is sample data until the booking system is connected.",
+    "roomLabel": "Room {n}"
+  },
+  "photo": { "pool": "The pool with the rooms looking onto it", "caption": "The pool sits in the middle of the lodge, and every room looks onto it." },
+  "plans": {
+    "title": "Three prices, nothing hidden",
+    "lead": "Per room, per night, in Egyptian pounds. Choose what suits you.",
+    "ro": "Room only",
+    "bb": "With breakfast",
+    "hb": "Breakfast and dinner",
+    "roNote": "Just the room",
+    "bbNote": "Breakfast every morning",
+    "hbNote": "Breakfast and dinner every day",
+    "unit": "EGP / night",
+    "stamp": "Prices valid until 21.12.2026",
+    "total": "Total EGP {total}"
+  },
+  "folio": {
+    "title": "Your bill",
+    "no": "No.",
+    "in": "Check-in",
+    "out": "Check-out",
+    "nights": "1 night|{n} nights",
+    "roomsN": "1 room|{n} rooms",
+    "stay": "Stay",
+    "plan": "Meals",
+    "rate": "Per night",
+    "total": "Total",
+    "egp": "EGP",
+    "pay": "Pay on arrival. Nothing is charged now.",
+    "cta": "Book now",
+    "onRequest": "Prices after 21.12.2026 are not published yet.",
+    "ask": "Ask us on WhatsApp",
+    "soon": "The booking page comes in the next step.",
+    "waAsk": "Hello, I would like the price of a room at Regency Lodge from {in} to {out}."
+  },
+  "room": {
+    "title": "The room",
+    "lead": "A standard double room looking onto the pool. All twenty rooms are the same kind, so there are no surprises when you arrive.",
+    "bed": "Bed", "bedV": "One double or two singles, your choice",
+    "guests": "Sleeps", "guestsV": "2 adults and 2 children",
+    "view": "View", "viewV": "The pool",
+    "ac": "Air conditioning", "acV": "In every room",
+    "minibar": "Minibar", "minibarV": "In the room",
+    "tv": "Television", "tvV": "In the room",
+    "alt1": "Room with two beds, wardrobe and television", "alt2": "Room with two beds and two windows"
+  },
+  "around": {
+    "title": "A short walk away",
+    "lead": "Walking times from the lodge door.",
+    "door": "Lodge door",
+    "min": "{n} min",
+    "airport": "Sharm El Sheikh International Airport is 15.6 km by car."
+  },
+  "direct": {
+    "title": "Why book here?",
+    "a": "The same price", "aT": "What you see here is what you hear on the phone and what you pay at reception.",
+    "b": "No deposit", "bT": "We hold your room at once, and you pay on arrival.",
+    "c": "The lodge answers", "cT": "You talk to reception directly, not to an agent."
+  },
+  "contact": { "title": "Contact", "phone": "Phone", "email": "Email", "address": "Address", "whatsapp": "WhatsApp" },
+  "foot": { "rights": "Regency Lodge, Sharm El Sheikh" }
+}

@@ -1,0 +1,88 @@
+---
+import '@fontsource/aref-ruqaa/400.css';
+import '@fontsource/aref-ruqaa/700.css';
+import '@fontsource-variable/readex-pro';
+import '@fontsource-variable/fraunces';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+import { LANGS, path, switchLang, useT, dirOf, type Lang } from '../i18n';
+import { SITE } from '../data/site';
+
+interface Props { lang: Lang; title: string; desc: string }
+const { lang, title, desc } = Astro.props;
+const { t } = useT(lang);
+const other = LANGS.find((l) => l.code !== lang)!;
+const abs = (p: string) => new URL(p, Astro.site).href;
+const hotel = {
+  '@context': 'https://schema.org',
+  '@type': 'LodgingBusiness',
+  name: SITE.name.en,
+  alternateName: SITE.name.ar,
+  telephone: SITE.phone,
+  email: SITE.email,
+  address: { '@type': 'PostalAddress', streetAddress: SITE.street.en, addressLocality: 'Sharm El Sheikh', addressRegion: 'South Sinai', addressCountry: 'EG' },
+  priceRange: 'EGP 1500-1800',
+};
+---
+<!doctype html>
+<html lang={lang} dir={dirOf(lang)}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>{title}</title>
+  <meta name="description" content={desc} />
+  <link rel="canonical" href={abs(path(lang))} />
+  {LANGS.map((l) => <link rel="alternate" hreflang={l.code} href={abs(path(l.code))} />)}
+  <link rel="alternate" hreflang="x-default" href={abs(path('ar'))} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={desc} />
+  <meta property="og:locale" content={LANGS.find((l) => l.code === lang)!.ogLocale} />
+  <meta name="theme-color" content="#1553b6" />
+  <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
+  <script type="application/ld+json" set:html={JSON.stringify(hotel)} />
+</head>
+<body>
+  <a class="skip" href="#main">{t('nav.skip')}</a>
+  <div class="strip" id="strip" hidden>
+    <div class="wrap strip-in">
+      <span>{t('strip.sunset')} <b class="num" id="sunset"></b></span>
+      <span>{t('strip.sea')} <b class="num" id="sea"></b></span>
+    </div>
+  </div>
+  <header class="hdr">
+    <div class="wrap hdr-in">
+      <a class="brand" href={path(lang)}>
+        <span class="brand-ar" lang="ar">{SITE.name.ar}</span>
+        <span class="brand-en" lang="en">Regency Lodge</span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#book">{t('nav.book')}</a>
+        <a href="#room">{t('nav.room')}</a>
+        <a href="#around">{t('nav.around')}</a>
+        <a href="#contact">{t('nav.contact')}</a>
+      </nav>
+      <div class="hdr-end">
+        <a class="lang" href={switchLang(lang)} lang={other.code} hreflang={other.code}>{t('nav.lang')}</a>
+        <a class="tel num" href={`tel:${SITE.phone}`} dir="ltr">{SITE.phoneDisplay}</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main"><slot /></main>
+
+  <footer class="foot" id="contact">
+    <div class="wrap foot-in">
+      <h2>{t('contact.title')}</h2>
+      <dl class="foot-list">
+        <div><dt>{t('contact.phone')}</dt><dd><a class="num" href={`tel:${SITE.phone}`} dir="ltr">{SITE.phoneDisplay}</a></dd></div>
+        <div><dt>{t('contact.whatsapp')}</dt><dd><a class="num" href={`https://wa.me/${SITE.whatsapp}`} dir="ltr" target="_blank" rel="noopener">+20 103 665 4930</a></dd></div>
+        <div><dt>{t('contact.email')}</dt><dd><a href={`mailto:${SITE.email}`} dir="ltr">{SITE.email}</a></dd></div>
+        <div><dt>{t('contact.address')}</dt><dd>{SITE.street[lang]}<br />{SITE.city[lang]}</dd></div>
+      </dl>
+      <p class="foot-rights">© <span class="num">2026</span> {t('foot.rights')}</p>
+    </div>
+  </footer>
+</body>
+</html>

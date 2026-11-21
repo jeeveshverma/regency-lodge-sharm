@@ -1,0 +1,244 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../components/Layout.astro';
+import Railing from '../components/Railing.astro';
+import { useT, type Lang } from '../i18n';
+import { SITE, PLANS, WALKS } from '../data/site';
+import { MAX_ROOMS, money } from '../lib/stay';
+import pool from '../assets/photos/pool.jpg';
+import room from '../assets/photos/room.jpg';
+import room2 from '../assets/photos/room2.jpg';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, branch } = useT(lang);
+const strings = { rack: branch('rack'), folio: branch('folio'), plans: branch('plans') };
+const slots = Array.from({ length: SITE.rooms }, (_, i) => i + 1);
+const spec = ['bed', 'guests', 'view', 'ac', 'minibar', 'tv'];
+const WALK_SPAN = 16; // minutes the walking line covers
+---
+<Layout lang={lang} title={t('meta.title')} desc={t('meta.desc')}>
+  <script type="application/json" id="strings" set:html={JSON.stringify(strings)} />
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="key" viewBox="0 0 24 60">
+      <circle cx="12" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="3.4" />
+      <path d="M12 16V56M12 40H19M12 48H17M12 56H19" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+  </svg>
+
+  <section class="hero wrap" id="book">
+    <div class="hero-text">
+      <p class="kicker">{t('hero.kicker')}</p>
+      <h1>{t('hero.h1')}</h1>
+      <p class="lead">{t('hero.lead')}</p>
+      <form class="bar" id="bar" onsubmit="return false">
+        <label><span>{t('bar.in')}</span><input type="date" id="f-in" required /></label>
+        <label><span>{t('bar.out')}</span><input type="date" id="f-out" required /></label>
+        <label class="bar-rooms"><span>{t('bar.rooms')}</span>
+          <select id="f-rooms">{Array.from({ length: MAX_ROOMS }, (_, i) => <option value={i + 1}>{i + 1}</option>)}</select>
+        </label>
+      </form>
+      <p class="count" id="count" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="rack" aria-labelledby="rack-title">
+      <div class="rack-head">
+        <h2 id="rack-title">{t('rack.title')}</h2>
+        <span class="rack-dates num" id="rack-dates"></span>
+      </div>
+      <ol class="slots" id="slots">
+        {slots.map((n) => (
+          <li class="slot" data-room={n} style={`--i:${n}`}>
+            <span class="plate num">{n}</span>
+            <span class="hook"></span>
+            <svg class="key" width="20" height="50"><use href="#key" /></svg>
+          </li>
+        ))}
+      </ol>
+      <ul class="legend">
+        <li><svg class="key" width="10" height="25"><use href="#key" /></svg>{t('rack.legendFree')}</li>
+        <li><svg class="key mine" width="10" height="25"><use href="#key" /></svg>{t('rack.legendMine')}</li>
+        <li><span class="hook"></span>{t('rack.legendTaken')}</li>
+      </ul>
+      <p class="demo">{t('rack.demo')}</p>
+    </div>
+  </section>
+
+  <figure class="poolshot wrap">
+    <Image src={pool} alt={t('photo.pool')} widths={[480, 800, 1280]} sizes="(min-width: 1240px) 1176px, 100vw" format="avif" quality={64} loading="eager" />
+    <figcaption>{t('photo.caption')}</figcaption>
+  </figure>
+
+  <Railing />
+
+  <section class="plans wrap">
+    <div class="plans-main">
+      <h2>{t('plans.title')}</h2>
+      <p class="lead">{t('plans.lead')}</p>
+      <div class="cards" role="radiogroup" aria-label={t('plans.title')}>
+        {PLANS.map((p) => (
+          <label class="card">
+            <input type="radio" name="plan" value={p.id} />
+            <span class="card-name">{t(`plans.${p.id}`)}</span>
+            <span class="card-note">{t(`plans.${p.id}Note`)}</span>
+            <span class="card-price"><b class="num">{money(p.price)}</b> {t('plans.unit')}</span>
+            <span class="card-total num" data-total={p.id}></span>
+          </label>
+        ))}
+      </div>
+      <p class="stamp"><span>{t('plans.stamp')}</span></p>
+    </div>
+
+    <aside class="folio" aria-labelledby="folio-title">
+      <header>
+        <h3 id="folio-title">{t('folio.title')}</h3>
+        <p><span lang="ar">{SITE.name.ar}</span> · <span lang="en">Regency Lodge</span></p>
+      </header>
+      <dl>
+        <div><dt>{t('folio.in')}</dt><dd data-f="in"></dd></div>
+        <div><dt>{t('folio.out')}</dt><dd data-f="out"></dd></div>
+        <div><dt>{t('folio.stay')}</dt><dd data-f="stay"></dd></div>
+        <div><dt>{t('folio.plan')}</dt><dd data-f="plan"></dd></div>
+        <div data-priced><dt>{t('folio.rate')}</dt><dd class="num" data-f="rate"></dd></div>
+        <div class="folio-total" data-priced><dt>{t('folio.total')}</dt><dd><b class="num" data-f="total"></b> {t('folio.egp')}</dd></div>
+      </dl>
+      <p class="folio-pay" data-priced>{t('folio.pay')}</p>
+      <p class="folio-req" id="onreq" hidden>{t('folio.onRequest')}</p>
+      <a class="btn" id="cta" href="#book">{t('folio.cta')}</a>
+      <p class="folio-soon" id="soon" hidden>{t('folio.soon')}</p>
+    </aside>
+  </section>
+
+  <Railing />
+
+  <section class="room wrap" id="room">
+    <div class="room-text">
+      <h2>{t('room.title')}</h2>
+      <p class="lead">{t('room.lead')}</p>
+      <dl class="spec">
+        {spec.map((k) => <div><dt>{t(`room.${k}`)}</dt><dd>{t(`room.${k}V`)}</dd></div>)}
+      </dl>
+    </div>
+    <div class="room-photos">
+      <Image src={room2} alt={t('room.alt1')} widths={[420, 720, 1100]} sizes="(min-width: 900px) 420px, 92vw" format="avif" quality={62} />
+      <Image src={room} alt={t('room.alt2')} widths={[320, 520, 900]} sizes="(min-width: 900px) 240px, 60vw" format="avif" quality={62} />
+    </div>
+  </section>
+
+  <section class="around" id="around">
+    <div class="wrap">
+      <h2>{t('around.title')}</h2>
+      <p class="lead">{t('around.lead')}</p>
+      <ol class="walk">
+        <li class="walk-door" style="--at:0"><b>{t('around.door')}</b></li>
+        {WALKS.map((w, i) => (
+          <li class:list={[i % 2 ? 'below' : 'above']} style={`--at:${(w.min / WALK_SPAN).toFixed(3)}`}>
+            <span class="walk-min num">{t('around.min', { n: w.min })}</span>
+            <b>{lang === 'ar' ? w.ar : w.en}</b>
+            <small>{lang === 'ar' ? w.kindAr : w.kindEn}</small>
+          </li>
+        ))}
+      </ol>
+      <p class="airport">{t('around.airport')}</p>
+    </div>
+  </section>
+
+  <section class="direct wrap">
+    <h2>{t('direct.title')}</h2>
+    <ol class="direct-list">
+      {['a', 'b', 'c'].map((k) => <li><b>{t(`direct.${k}`)}</b><span>{t(`direct.${k}T`)}</span></li>)}
+    </ol>
+  </section>
+</Layout>
+
+<script>
+  import { readStay, writeStay, quote, money, fmtDate, plural, iso, parse, plusDays, type Stay } from '../lib/stay';
+  import { freeRooms } from '../lib/avail';
+  import { sunset } from '../lib/sun';
+  import { SITE, SEA_TEMP, PLANS } from '../data/site';
+
+  const lang = document.documentElement.lang;
+  const S = JSON.parse(document.getElementById('strings')!.textContent!) as Record<'rack' | 'folio' | 'plans', Record<string, string>>;
+  const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
+  const fIn = $<HTMLInputElement>('#f-in'), fOut = $<HTMLInputElement>('#f-out'), fRooms = $<HTMLSelectElement>('#f-rooms');
+  const slots = [...document.querySelectorAll<HTMLElement>('.slot')];
+  const radios = [...document.querySelectorAll<HTMLInputElement>('input[name=plan]')];
+  const field = (k: string) => $(`[data-f=${k}]`);
+  const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k) => String(v[k]));
+
+  // header strip: today's sunset and the month's usual sea temperature
+  const now = new Date();
+  $('#sunset').textContent = sunset(now, SITE.geo.lat, SITE.geo.lng);
+  $('#sea').textContent = `${SEA_TEMP[now.getMonth()]}°`;
+  $('#strip').hidden = false;
+
+  let stay = readStay();
+  fIn.min = iso(new Date());
+
+  function render(animate = true) {
+    fIn.value = stay.in; fOut.value = stay.out; fRooms.value = String(stay.rooms);
+    fOut.min = iso(plusDays(parse(stay.in), 1));
+    for (const r of radios) r.checked = r.value === stay.plan;
+
+    // the key board
+    const free = freeRooms(stay);
+    const enough = free.length >= stay.rooms;
+    const mine = new Set(enough ? free.slice(0, stay.rooms) : []);
+    for (const el of slots) {
+      const n = Number(el.dataset.room);
+      const isFree = free.includes(n);
+      el.classList.toggle('taken', !isFree);
+      el.classList.toggle('mine', mine.has(n));
+      el.classList.remove('swing');
+      el.setAttribute('aria-label', `${fill(S.rack.roomLabel, { n })}: ${isFree ? S.rack.legendFree : S.rack.legendTaken}`);
+    }
+    if (animate) { void document.body.offsetWidth; for (const el of slots) el.classList.add('swing'); }
+    const count = $('#count');
+    count.textContent = !free.length ? S.rack.none : !enough ? fill(S.rack.short, { n: free.length }) : fill(S.rack.free, { n: free.length });
+    count.classList.toggle('warn', !enough);
+    $('#rack-dates').textContent = `${fmtDate(stay.in, lang)} – ${fmtDate(stay.out, lang)}`;
+
+    // prices on the three cards and on the bill
+    const q = quote(stay);
+    for (const p of PLANS) {
+      const pq = quote(stay, p.id);
+      $(`[data-total=${p.id}]`).textContent = pq.onRequest ? '' : fill(S.plans.total, { total: money(pq.total) });
+    }
+    field('in').textContent = fmtDate(stay.in, lang);
+    field('out').textContent = fmtDate(stay.out, lang);
+    field('stay').textContent = `${plural(S.folio.nights, q.nights, lang)} × ${plural(S.folio.roomsN, stay.rooms, lang)}`;
+    field('plan').textContent = S.plans[stay.plan];
+    field('rate').textContent = money(q.rate);
+    field('total').textContent = money(q.total);
+    for (const el of document.querySelectorAll<HTMLElement>('[data-priced]')) el.hidden = q.onRequest;
+    $('#onreq').hidden = !q.onRequest;
+    $('#soon').hidden = true;
+    const cta = $<HTMLAnchorElement>('#cta');
+    cta.textContent = q.onRequest ? S.folio.ask : S.folio.cta;
+    cta.href = q.onRequest
+      ? `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(fill(S.folio.waAsk, { in: fmtDate(stay.in, lang), out: fmtDate(stay.out, lang) }))}`
+      : '#book';
+    cta.target = q.onRequest ? '_blank' : '';
+    cta.classList.toggle('off', !q.onRequest && !enough);
+    cta.setAttribute('aria-disabled', String(!q.onRequest && !enough));
+  }
+
+  const update = (patch: Partial<Stay>) => { stay = writeStay({ ...stay, ...patch }); render(); };
+  fIn.addEventListener('change', () => {
+    // moving check-in keeps the length of the stay
+    const len = Math.round((+parse(stay.out) - +parse(stay.in)) / 864e5);
+    if (fIn.value) update({ in: fIn.value, out: iso(plusDays(parse(fIn.value), len)) });
+  });
+  fOut.addEventListener('change', () => fOut.value && update({ out: fOut.value }));
+  fRooms.addEventListener('change', () => update({ rooms: Number(fRooms.value) }));
+  for (const r of radios) r.addEventListener('change', () => update({ plan: r.value as Stay['plan'] }));
+  $('#cta').addEventListener('click', (e) => {
+    const cta = e.currentTarget as HTMLAnchorElement;
+    if (cta.target === '_blank') return;
+    e.preventDefault();
+    if (cta.classList.contains('off')) { $('#bar').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    $('#soon').hidden = false; // design preview: the booking page is the next step
+  });
+
+  render();
+</script>
