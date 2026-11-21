@@ -254,6 +254,7 @@ html[lang='ar'] .count { padding: 2px 18px 4px; }
 .foot dd { color: #fff; font-size: 1.05rem; overflow-wrap: anywhere; }
 .foot dd a { text-decoration-color: rgba(255, 255, 255, 0.45); }
 .foot-rights { margin-top: 36px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.25); font-size: 0.82rem; color: #9dbbe6; }
+.foot-credit { margin-top: 6px; font-size: 0.72rem; color: #7f9fd0; }
 @media (min-width: 700px) { .foot-list { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1000px) { .foot-list { grid-template-columns: repeat(4, auto); justify-content: space-between; } }
 
