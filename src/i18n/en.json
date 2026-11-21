@@ -7,13 +7,14 @@
   "strip": { "sunset": "Sunset in Sharm today", "sea": "Average sea temperature this month" },
   "hero": {
     "kicker": "El Hadaba · Sharm El Sheikh",
-    "h1": "Twenty rooms around the pool.",
-    "lead": "One kind of room, three plain prices. Pick your dates and look at the key board: every key still hanging is a room waiting for you."
+    "h1": "A room on the pool, EGP 1,500 a night.",
+    "lead": "Twenty rooms, all the same kind, and three plain prices. Pick your dates and see which keys are still hanging on the board."
   },
   "bar": { "in": "Check-in", "out": "Check-out", "rooms": "Rooms" },
   "rack": {
     "title": "The key board",
-    "free": "{n} of 20 rooms free",
+    "free": "Available for your dates",
+    "few": "Last room for your dates|Last {n} rooms for your dates",
     "none": "No rooms are free on these dates. Try other dates.",
     "short": "Only {n} free on these dates. Ask for fewer rooms or change the dates.",
     "legendFree": "Key hanging: room free",
@@ -33,7 +34,6 @@
     "bbNote": "Breakfast every morning",
     "hbNote": "Breakfast and dinner every day",
     "unit": "EGP / night",
-    "stamp": "Prices valid until 21.12.2026",
     "total": "Total EGP {total}"
   },
   "folio": {
@@ -50,7 +50,7 @@
     "egp": "EGP",
     "pay": "Pay on arrival. Nothing is charged now.",
     "cta": "Book now",
-    "onRequest": "Prices after 21.12.2026 are not published yet.",
+    "onRequest": "Prices for these dates are not published yet.",
     "ask": "Ask us on WhatsApp",
     "soon": "The booking page comes in the next step.",
     "waAsk": "Hello, I would like the price of a room at Regency Lodge from {in} to {out}."

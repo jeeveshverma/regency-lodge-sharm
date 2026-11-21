@@ -86,7 +86,6 @@ const WALK_SPAN = 16; // minutes the walking line covers
           </label>
         ))}
       </div>
-      <p class="stamp"><span>{t('plans.stamp')}</span></p>
     </div>
 
     <aside class="folio" aria-labelledby="folio-title">
@@ -172,6 +171,7 @@ const WALK_SPAN = 16; // minutes the walking line covers
   $('#sea').textContent = `${SEA_TEMP[now.getMonth()]}°`;
   $('#strip').hidden = false;
 
+  const FEW = 3; // say "last rooms" from this many down
   let stay = readStay();
   fIn.min = iso(new Date());
 
@@ -194,7 +194,8 @@ const WALK_SPAN = 16; // minutes the walking line covers
     }
     if (animate) { void document.body.offsetWidth; for (const el of slots) el.classList.add('swing'); }
     const count = $('#count');
-    count.textContent = !free.length ? S.rack.none : !enough ? fill(S.rack.short, { n: free.length }) : fill(S.rack.free, { n: free.length });
+    // no running count of free rooms: the guest learns whether there is a room, and when only a few are left
+    count.textContent = !free.length ? S.rack.none : !enough ? fill(S.rack.short, { n: free.length }) : free.length <= FEW ? plural(S.rack.few, free.length, lang) : S.rack.free;
     count.classList.toggle('warn', !enough);
     $('#rack-dates').textContent = `${fmtDate(stay.in, lang)} – ${fmtDate(stay.out, lang)}`;
 

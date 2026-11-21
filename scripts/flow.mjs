@@ -17,6 +17,6 @@ await page.goto(`${base}/en/?in=2026-12-20&out=2026-12-22&rooms=1&plan=bb`, { wa
 console.log('20-22 Dec, last priced night is the 21st (expect 3,200):', JSON.stringify(await read()));
 for (let d = 1; d <= 20; d++) { // find a date range where fewer than 5 rooms are free
   await page.goto(`${base}/en/?in=2026-12-${String(d).padStart(2, '0')}&out=2026-12-21&rooms=5&plan=bb`, { waitUntil: 'networkidle' });
-  const r = await read(); if (r.keys < 5) { console.log(`from ${d} Dec, 5 rooms asked:`, JSON.stringify(r)); break; }
+  const r = await read(); if (r.keys < 5 && r.keys > 0) { console.log(`from ${d} Dec, 5 rooms asked:`, JSON.stringify(r)); break; }
 }
 await browser.close();
