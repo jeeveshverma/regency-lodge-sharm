@@ -1,13 +1,13 @@
 {
   "meta": {
     "title": "Regency Lodge, Sharm El Sheikh | Book your room direct",
-    "desc": "Twenty double rooms around the pool in El Hadaba, Sharm El Sheikh. From EGP 1,500 per room per night. See which rooms are free and book direct; pay on arrival."
+    "desc": "Twenty double rooms around the pool in El Hadaba, Sharm El Sheikh. From EGP {price} per room per night. See which rooms are free and book direct; pay on arrival."
   },
   "nav": { "book": "Book", "room": "The room", "around": "Around", "contact": "Contact", "lang": "العربية", "skip": "Skip to content" },
   "strip": { "sunset": "Sunset in Sharm today", "sea": "Average sea temperature this month" },
   "hero": {
     "kicker": "El Hadaba · Sharm El Sheikh",
-    "h1": "A room on the pool, EGP 1,500 a night.",
+    "h1": "A room on the pool, EGP {price} a night.",
     "lead": "Twenty rooms, all the same kind, and three plain prices. Pick your dates and see which keys are still hanging on the board."
   },
   "bar": { "in": "Check-in", "out": "Check-out", "rooms": "Rooms" },

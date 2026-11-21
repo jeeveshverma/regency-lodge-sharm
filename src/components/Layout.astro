@@ -6,7 +6,7 @@ import '@fontsource-variable/fraunces';
 import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 import { LANGS, path, switchLang, useT, dirOf, type Lang } from '../i18n';
-import { SITE } from '../data/site';
+import { SITE, PLANS } from '../data/site';
 
 interface Props { lang: Lang; title: string; desc: string }
 const { lang, title, desc } = Astro.props;
@@ -21,7 +21,7 @@ const hotel = {
   telephone: SITE.phone,
   email: SITE.email,
   address: { '@type': 'PostalAddress', streetAddress: SITE.street.en, addressLocality: 'Sharm El Sheikh', addressRegion: 'South Sinai', addressCountry: 'EG' },
-  priceRange: 'EGP 1500-1800',
+  priceRange: `EGP ${Math.min(...PLANS.map((p) => p.price))}-${Math.max(...PLANS.map((p) => p.price))}`,
 };
 ---
 <!doctype html>

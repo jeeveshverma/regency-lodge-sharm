@@ -18,6 +18,8 @@ export const PLANS: { id: PlanId; price: number }[] = [
   { id: 'bb', price: 1600 },
   { id: 'hb', price: 1800 },
 ];
+/** The lowest nightly price: the one the headline and the page description quote. */
+export const FROM_PRICE = Math.min(...PLANS.map((p) => p.price));
 /** Last night the published prices cover. */
 export const RATES_UNTIL = '2026-12-21';
 
