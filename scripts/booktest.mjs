@@ -37,7 +37,7 @@ for (const [lang, pre] of [['ar', '/'], ['en', '/en/']]) for (const width of [39
   const ref = await page.textContent('#ref');
   check(`${tag} booking number given`, /^RL-[A-Z2-9]{5}$/.test(ref), ref);
   const wa = decodeURIComponent(await page.getAttribute('#send-wa', 'href'));
-  check(`${tag} WhatsApp message carries number and total`, wa.startsWith('https://wa.me/201036654930?text=') && wa.includes(ref) && wa.includes('9,600'), wa.slice(0, 80));
+  check(`${tag} WhatsApp message carries number and total`, wa.startsWith('https://wa.me/201122776555?text=') && wa.includes(ref) && wa.includes('9,600'), wa.slice(0, 80));
   if (shots) await page.screenshot({ path: `${shots}/book3-${lang}-${width}.png`, fullPage: true });
   const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   check(`${tag} no sideways scroll`, over <= 0, over);

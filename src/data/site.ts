@@ -3,7 +3,8 @@ export const SITE = {
   name: { ar: 'ريجينسي لودج', en: 'Regency Lodge' },
   phone: '+201036654930',
   phoneDisplay: '0103 665 4930',
-  whatsapp: '201036654930', // to confirm: assumed the same as the phone
+  whatsapp: '201122776555',
+  whatsappDisplay: '+20 112 277 6555',
   email: 'Regencylodge@royalhils.com',
   street: { ar: 'شارع مجلس المدينة، الهضبة', en: 'Magles El-Madina St, El Hadaba' },
   city: { ar: 'شرم الشيخ، جنوب سيناء', en: 'Sharm El Sheikh, South Sinai' },
