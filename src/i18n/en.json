@@ -93,7 +93,16 @@
     "pMinibar": "Minibar",
     "pTv": "TV",
     "alt1": "Room with two beds, wardrobe and television",
-    "alt2": "Room with two beds and two windows"
+    "alt2": "Room with a double bed and a single bed"
+  },
+  "look": {
+    "title": "Have a look around",
+    "garden": "Balconies over the garden",
+    "pool2": "The pool from the first floor",
+    "restaurant": "The restaurant",
+    "night": "The terrace after dark",
+    "bathroom": "The bathroom",
+    "poolside": "Your spot by the pool"
   },
   "direct": {
     "title": "Why book here?",

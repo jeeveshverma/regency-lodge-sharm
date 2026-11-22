@@ -11,7 +11,21 @@ import { useT, path, type Lang } from '../i18n';
 import { SITE, PLANS, WALKS, FROM_PRICE } from '../data/site';
 import { MAX_ROOMS, money } from '../lib/stay';
 import pool from '../assets/photos/pool.jpg';
-import room from '../assets/photos/room.jpg';
+import room from '../assets/photos/room3.jpg';
+import garden from '../assets/photos/garden.jpg';
+import pool2 from '../assets/photos/pool2.jpg';
+import restaurant from '../assets/photos/restaurant.jpg';
+import terraceNight from '../assets/photos/terrace-night.jpg';
+import bathroom from '../assets/photos/bathroom.jpg';
+import poolside from '../assets/photos/poolside.jpg';
+const gallery = [
+  { src: garden, k: 'garden', wide: true },
+  { src: pool2, k: 'pool2', wide: true },
+  { src: restaurant, k: 'restaurant' },
+  { src: terraceNight, k: 'night' },
+  { src: bathroom, k: 'bathroom' },
+  { src: poolside, k: 'poolside' },
+];
 import room2 from '../assets/photos/room2.jpg';
 
 interface Props { lang: Lang }
@@ -140,6 +154,18 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
           <Image src={room} alt={t('room.alt2')} widths={[320, 520, 900]} sizes="(min-width: 900px) 240px, 60vw" format="avif" quality={62} />
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="look wrap" id="photos">
+    <h2 class="sq">{t('look.title')}</h2>
+    <div class="look-grid">
+      {gallery.map((g) => (
+        <figure class:list={[{ wide: g.wide }]}>
+          <Image src={g.src} alt={t(`look.${g.k}`)} widths={g.wide ? [480, 800, 1200] : [320, 520, 800]} sizes={g.wide ? '(min-width: 900px) 580px, 92vw' : '(min-width: 900px) 280px, 46vw'} format="avif" quality={62} />
+          <figcaption>{t(`look.${g.k}`)}</figcaption>
+        </figure>
+      ))}
     </div>
   </section>
 
