@@ -92,8 +92,12 @@
     "pWardrobe": "Wardrobe",
     "pMinibar": "Minibar",
     "pTv": "TV",
-    "alt1": "Room with two beds, wardrobe and television",
-    "alt2": "Room with a double bed and a single bed"
+    "alt1": "Twin room with grey walls and a bedside lamp",
+    "alt2": "Twin room with a wardrobe, fridge and television",
+    "alt3": "Room with a double bed and two chairs by the window",
+    "alt4": "Room with three beds",
+    "alt5": "Twin room with wall lamps",
+    "alt6": "Room with a double bed and a single bed"
   },
   "look": {
     "title": "Have a look around",

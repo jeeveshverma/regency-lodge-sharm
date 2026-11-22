@@ -39,7 +39,7 @@ dinner, valid until 21.12.2026. All in `src/data/site.ts`.
 
 Tripadvisor listing "Regency Hotel Sharm" (d34354783): address (El Hadaba, Magles El-Madina St), walking
 times, airport distance, and the three photos (Booking.com partner photos, watermark strips cropped).
-Seven more photos (garden, pool, restaurant, terrace at night, bathroom, poolside, one room) come from the
+Twelve more photos (garden, pool, restaurant, terrace at night, bathroom, poolside, six rooms) come from the
 lodge's two Google listings ("فندق ريجينسى لودج شرم" and "Regency Hotel Sharm"): visitor and owner uploads,
 chosen only where the blue-and-white building is recognisable. To be replaced by the owner's own photos.
 

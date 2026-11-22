@@ -217,17 +217,18 @@ html[lang='ar'] .count { padding: 2px 18px 4px; }
 
 /* ---------- the room ---------- */
 .room { background: var(--plaster); border-block: 3px solid var(--navy); }
-.room-in { display: grid; gap: 36px; padding-block: 60px; }
+.room-in { display: grid; gap: 36px; padding-block: 60px 40px; }
 .spec { margin-top: 24px; border-top: 3px solid var(--navy); }
 .spec > div { display: grid; grid-template-columns: 9.5em 1fr; gap: 12px; padding: 11px 0; border-bottom: 2px dashed var(--line); }
 .spec dt { color: var(--cobalt); font-weight: 600; }
 .spec dd { color: var(--ink); }
 .room-side { display: grid; gap: 26px; }
-.room-photos { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; align-items: end; }
-.room-photos img { width: 100%; object-fit: cover; border: 7px solid var(--white); border-bottom-width: 22px; box-shadow: 0 0 0 2px var(--navy), var(--hard); }
-.room-photos img:first-child { aspect-ratio: 4 / 3; rotate: -1.6deg; }
-.room-photos img:last-child { aspect-ratio: 3 / 4; rotate: 2.2deg; }
-@media (min-width: 900px) { .room-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 64px; align-items: center; padding-block: 90px; } }
+.room-photos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 16px; padding-bottom: 60px; }
+.room-photos img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border: 7px solid var(--white); box-shadow: 0 0 0 2px var(--navy), var(--hard); }
+.room-photos img:nth-child(odd) { rotate: -1.2deg; }
+.room-photos img:nth-child(even) { rotate: 1.4deg; }
+@media (min-width: 900px) { .room-photos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 30px; padding-bottom: 90px; } }
+@media (min-width: 900px) { .room-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 64px; align-items: center; padding-block: 90px 56px; } }
 
 /* ---------- under the water: a day from the lodge ---------- */
 .scene { background: var(--white); padding-top: 30px; }

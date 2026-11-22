@@ -12,6 +12,12 @@ import { SITE, PLANS, WALKS, FROM_PRICE } from '../data/site';
 import { MAX_ROOMS, money } from '../lib/stay';
 import pool from '../assets/photos/pool.jpg';
 import room from '../assets/photos/room3.jpg';
+import roomGrey from '../assets/photos/room-grey.jpg';
+import roomTwin from '../assets/photos/room-twin.jpg';
+import roomDouble from '../assets/photos/room-double.jpg';
+import roomTriple from '../assets/photos/room-triple.jpg';
+import roomLamps from '../assets/photos/room-lamps.jpg';
+const roomShots = [roomGrey, roomTwin, roomDouble, roomTriple, roomLamps, room];
 import garden from '../assets/photos/garden.jpg';
 import pool2 from '../assets/photos/pool2.jpg';
 import restaurant from '../assets/photos/restaurant.jpg';
@@ -26,7 +32,6 @@ const gallery = [
   { src: bathroom, k: 'bathroom' },
   { src: poolside, k: 'poolside' },
 ];
-import room2 from '../assets/photos/room2.jpg';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -149,11 +154,12 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
       </div>
       <div class="room-side">
         <RoomPlan lang={lang} />
-        <div class="room-photos">
-          <Image src={room2} alt={t('room.alt1')} widths={[420, 720, 1100]} sizes="(min-width: 900px) 420px, 92vw" format="avif" quality={62} />
-          <Image src={room} alt={t('room.alt2')} widths={[320, 520, 900]} sizes="(min-width: 900px) 240px, 60vw" format="avif" quality={62} />
-        </div>
       </div>
+    </div>
+    <div class="wrap room-photos">
+      {roomShots.map((r, i) => (
+        <Image src={r} alt={t(`room.alt${i + 1}`)} widths={[360, 560, 680]} sizes="(min-width: 900px) 370px, 46vw" format="avif" quality={66} />
+      ))}
     </div>
   </section>
 
