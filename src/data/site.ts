@@ -10,8 +10,8 @@ export const SITE = {
   city: { ar: 'شرم الشيخ، جنوب سيناء', en: 'Sharm El Sheikh, South Sinai' },
   geo: { lat: 27.865, lng: 34.295 }, // El Hadaba, approximate: used only for the sunset time
   rooms: 20,
-  checkIn: '14:00', // to confirm with the owner
-  checkOut: '12:00', // to confirm with the owner
+  checkIn: '14:00', // as on the lodge's Booking.com listing
+  checkOut: '12:00', // as on the lodge's Booking.com listing
 };
 
 export type PlanId = 'ro' | 'bb' | 'hb';
@@ -32,6 +32,41 @@ export const WALKS: { min: number; ar: string; en: string; kindAr: string; kindE
   { min: 11, ar: 'تيخانوس جريل هاوس', en: "Tejano's Grill House", kindAr: 'مشويات', kindEn: 'grill' },
   { min: 13, ar: 'فيردي بازيليكو', en: 'Verde Basilico', kindAr: 'مطعم إيطالي', kindEn: 'Italian' },
   { min: 14, ar: 'مانجو ماركت', en: 'Mango Market', kindAr: 'سوق', kindEn: 'market' },
+];
+
+/** Nearest beach, walking time from the lodge's Booking.com listing. */
+export const BEACH = { min: 14, ar: 'شاطئ خليج شرم المايه', en: 'Sharm El Maya Bay beach' };
+
+/** Real guest reviews, quoted from the lodge's Google listing ("Regency Hotel Sharm"). Arabic is a translation. */
+export const REVIEWS: { name: string; ctxEn: string; ctxAr: string; en: string; ar: string }[] = [
+  {
+    name: 'Rambo',
+    ctxEn: 'Fifth stay, October 2026',
+    ctxAr: 'الإقامة الخامسة، أكتوبر 2026',
+    en: 'The rooms are very spacious, and the air conditioning is excellent. The swimming pool is clean and well maintained. This was already my fifth visit — a fact that speaks for itself!',
+    ar: 'الغرف واسعة جدًا والتكييف ممتاز. المسبح نظيف ومُعتنى به. هذه كانت زيارتي الخامسة، وهذا يكفي دليلًا!',
+  },
+  {
+    name: 'Saltanat A.',
+    ctxEn: 'Family holiday',
+    ctxAr: 'إجازة عائلية',
+    en: 'My children were very happy here. The staff always smiled, were positive and friendly. The location is very convenient — close to the famous Sharm Old Market.',
+    ar: 'أطفالي كانوا سعداء جدًا هنا. العاملون مبتسمون دائمًا وودودون. الموقع مناسب جدًا، قريب من السوق القديم المشهور في شرم.',
+  },
+  {
+    name: 'Shams F.',
+    ctxEn: 'Guest',
+    ctxAr: 'ضيف',
+    en: 'This hotel provided excellent value for money. Everything we received was worth more than we paid.',
+    ar: 'الفندق قيمة ممتازة مقابل السعر. كل ما حصلنا عليه كان يساوي أكثر مما دفعنا.',
+  },
+  {
+    name: 'Ibrahim S.',
+    ctxEn: 'Couple',
+    ctxAr: 'زوجان',
+    en: 'Really good service and the chefs are amazing.',
+    ar: 'خدمة جيدة فعلًا والطهاة رائعون.',
+  },
 ];
 
 /** Average Red Sea surface temperature at Sharm by month, °C (Jan..Dec). */

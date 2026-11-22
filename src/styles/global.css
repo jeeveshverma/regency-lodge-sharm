@@ -313,6 +313,18 @@ html[lang='ar'] .count { padding: 2px 18px 4px; }
 .look figure:nth-child(even) { rotate: 1.2deg; }
 @media (min-width: 900px) { .look { padding-block: 90px; } .look-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 30px; } .look .wide img { aspect-ratio: 3 / 2; } .look figcaption { font-size: 1.2rem; } }
 
+/* ---------- what guests say ---------- */
+.said { background: var(--aqua-pale); border-block: 3px solid var(--navy); padding-block: 60px; }
+.said-grid { display: grid; gap: 30px 28px; margin-top: 34px; }
+.said figure { margin: 0; position: relative; background: var(--white); border: 3px solid var(--navy); box-shadow: var(--hard); padding: 34px 22px 18px; display: flex; flex-direction: column; gap: 16px; }
+.said figure::before { content: '”'; position: absolute; top: -22px; inset-inline-start: 16px; width: 46px; height: 46px; display: grid; place-items: center; background: var(--sun); border: 3px solid var(--navy); border-radius: 50%; font-family: var(--display); font-size: 2.4rem; line-height: 1; color: var(--navy); padding-top: 14px; }
+.said blockquote { margin: 0; color: var(--ink); font-size: 1.05rem; line-height: 1.7; }
+.said figure:first-child blockquote { font-size: 1.2rem; }
+.said figcaption { margin-top: auto; padding-top: 12px; border-top: 2px dashed var(--line); display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: baseline; }
+.said figcaption b { font-family: var(--display); font-weight: 400; font-size: 1.2rem; color: var(--cobalt); }
+.said figcaption span { font-size: 0.85rem; color: #4a628a; }
+@media (min-width: 800px) { .said { padding-block: 90px; } .said-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
 /* ---------- floating WhatsApp button ---------- */
 .wa-float { position: fixed; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 30; width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; background: #25d366; color: #fff; border: 3px solid var(--navy); box-shadow: 4px 4px 0 var(--navy); transition: translate 0.15s, box-shadow 0.15s; }
 .wa-float:hover, .wa-float:focus-visible { translate: -2px -2px; box-shadow: 6px 6px 0 var(--navy); }

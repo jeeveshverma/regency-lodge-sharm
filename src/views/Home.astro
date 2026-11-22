@@ -8,7 +8,7 @@ import RoomPlan from '../components/RoomPlan.astro';
 import PlanIcon from '../components/PlanIcon.astro';
 import Folio from '../components/Folio.astro';
 import { useT, path, type Lang } from '../i18n';
-import { SITE, PLANS, WALKS, FROM_PRICE } from '../data/site';
+import { SITE, PLANS, WALKS, FROM_PRICE, BEACH, REVIEWS } from '../data/site';
 import { MAX_ROOMS, money } from '../lib/stay';
 import pool from '../assets/photos/pool.jpg';
 import room from '../assets/photos/room3.jpg';
@@ -24,9 +24,17 @@ import restaurant from '../assets/photos/restaurant.jpg';
 import terraceNight from '../assets/photos/terrace-night.jpg';
 import bathroom from '../assets/photos/bathroom.jpg';
 import poolside from '../assets/photos/poolside.jpg';
+import balconyView from '../assets/photos/balcony-view.jpg';
+import blueDoor from '../assets/photos/blue-door.jpg';
+import walkway from '../assets/photos/walkway.jpg';
+import poolBar from '../assets/photos/pool-bar.jpg';
 const gallery = [
   { src: garden, k: 'garden', wide: true },
   { src: pool2, k: 'pool2', wide: true },
+  { src: balconyView, k: 'balcony' },
+  { src: poolBar, k: 'poolbar' },
+  { src: blueDoor, k: 'door' },
+  { src: walkway, k: 'walkway' },
   { src: restaurant, k: 'restaurant' },
   { src: terraceNight, k: 'night' },
   { src: bathroom, k: 'bathroom' },
@@ -175,6 +183,20 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
     </div>
   </section>
 
+  <section class="said" id="reviews">
+    <div class="wrap">
+      <h2 class="sq">{t('said.title')}</h2>
+      <div class="said-grid">
+        {REVIEWS.map((r) => (
+          <figure>
+            <blockquote>{lang === 'ar' ? r.ar : r.en}</blockquote>
+            <figcaption><b dir="auto">{r.name}</b><span>{lang === 'ar' ? r.ctxAr : r.ctxEn} · {t('said.source')}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <LodgeScene />
 
   <section class="day" id="day">
@@ -187,7 +209,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
           <span class="when">{t('day.am')}</span>
           <h3>{t('day.amT')}</h3>
           <p>{t('day.amB')}</p>
-          <ul class="chips"><li>{place(dive)} · {t('day.walk', { n: dive.min })}</li></ul>
+          <ul class="chips"><li>{place(dive)} · {t('day.walk', { n: dive.min })}</li><li>{BEACH[lang]} · {t('day.walk', { n: BEACH.min })}</li></ul>
         </li>
         <li>
           <span class="when">{t('day.pm')}</span>

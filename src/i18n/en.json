@@ -106,7 +106,15 @@
     "restaurant": "The restaurant",
     "night": "The terrace after dark",
     "bathroom": "The bathroom",
-    "poolside": "Your spot by the pool"
+    "poolside": "Your spot by the pool",
+    "balcony": "The pool from your balcony",
+    "poolbar": "The pool bar",
+    "door": "Blue doors, white walls",
+    "walkway": "The walk to your room"
+  },
+  "said": {
+    "title": "What guests say",
+    "source": "Google review"
   },
   "direct": {
     "title": "Why book here?",
