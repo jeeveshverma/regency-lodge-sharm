@@ -110,7 +110,14 @@
     "balcony": "The pool from your balcony",
     "poolbar": "The pool bar",
     "door": "Blue doors, white walls",
-    "walkway": "The walk to your room"
+    "walkway": "The walk to your room",
+    "poolwide": "The whole pool",
+    "flowers": "Flowers by the pool",
+    "courtyard": "Rooms around the pool",
+    "slides": "The water slides",
+    "chairs": "Two chairs on the terrace",
+    "window": "The pool from your window",
+    "above": "Looking down at the pool"
   },
   "said": {
     "title": "What guests say",

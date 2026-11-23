@@ -42,6 +42,8 @@ times, airport distance, and the three photos (Booking.com partner photos, water
 Twelve more photos (garden, pool, restaurant, terrace at night, bathroom, poolside, six rooms) come from the
 lodge's two Google listings ("فندق ريجينسى لودج شرم" and "Regency Hotel Sharm"): visitor and owner uploads,
 chosen only where the blue-and-white building is recognisable. To be replaced by the owner's own photos.
+Eight photos sent on WhatsApp on 2026-11-23 (whole pool, flowers, courtyard, slides, terrace chairs, window view,
+pool from above, three-bed room): the sharp ones out of fourteen; logo and edit marks cropped off.
 Three more (balcony view, blue door, walkway) and the check-in/out times (14:00 / 12:00) and beach walk (Sharm El Maya
 Bay, 14 min) come from the lodge's Booking.com listing. Guest quotes in `REVIEWS` (`src/data/site.ts`) are real
 Google reviews from the "Regency Hotel Sharm" listing, shortened; the Arabic is a translation.
