@@ -288,6 +288,8 @@ html[lang='ar'] .count { padding: 2px 18px 4px; }
 .review .spec { margin-top: 18px; }
 .review .spec dd { overflow-wrap: anywhere; }
 .is-cancelled { color: var(--warn) !important; }
+.is-pending { font-weight: 600; }
+.hint { color: var(--muted); font-size: 0.85rem; font-weight: 400; }
 .link { display: block; margin: 18px auto 0; background: none; border: 0; color: var(--cobalt); font: inherit; font-size: 0.95rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; text-align: center; }
 .btn-wa { background: #25a35a; color: #fff; }
 .btn-danger { background: var(--white); color: var(--warn); border-color: var(--warn); box-shadow: 4px 4px 0 var(--warn) !important; }

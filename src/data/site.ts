@@ -1,6 +1,6 @@
-/** Facts about the lodge. Owner-supplied unless marked; see README for what is still to confirm. */
+/** Facts about the hotel (Regency Royal Sharm; first briefed as Regency Lodge). Owner-supplied unless marked; see README for what is still to confirm. */
 export const SITE = {
-  name: { ar: 'ريجينسي لودج', en: 'Regency Lodge' },
+  name: { ar: 'ريجينسي رويال شرم', en: 'Regency Royal Sharm' },
   phone: '+201036654930',
   phoneDisplay: '0103 665 4930',
   whatsapp: '201122776555',
@@ -9,7 +9,7 @@ export const SITE = {
   street: { ar: 'شارع مجلس المدينة، الهضبة', en: 'Magles El-Madina St, El Hadaba' },
   city: { ar: 'شرم الشيخ، جنوب سيناء', en: 'Sharm El Sheikh, South Sinai' },
   geo: { lat: 27.865, lng: 34.295 }, // El Hadaba, approximate: used only for the sunset time
-  rooms: 20,
+  keys: 20, // keys drawn on the hero's key board; decoration, not a room count
   checkIn: '14:00', // as on the lodge's Booking.com listing
   checkOut: '12:00', // as on the lodge's Booking.com listing
 };

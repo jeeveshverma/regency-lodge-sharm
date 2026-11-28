@@ -59,7 +59,7 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const { t, branch } = useT(lang);
 const strings = { rack: branch('rack'), folio: branch('folio'), plans: branch('plans'), today: branch('today') };
-const slots = Array.from({ length: SITE.rooms }, (_, i) => i + 1);
+const slots = Array.from({ length: SITE.keys }, (_, i) => i + 1);
 const tilt = (n: number) => ((n * 37) % 9) - 4; // each key hangs a little differently
 const spec = ['bed', 'guests', 'view', 'ac', 'minibar', 'tv'];
 const place = (w: (typeof WALKS)[number]) => (lang === 'ar' ? w.ar : w.en);
@@ -88,7 +88,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
             <select id="f-rooms">{Array.from({ length: MAX_ROOMS }, (_, i) => <option value={i + 1}>{i + 1}</option>)}</select>
           </label>
         </form>
-        <p class="count" id="count" role="status" aria-live="polite"></p>
+        <p class="count">{t('rack.note')}</p>
       </div>
 
       <div class="rack-wrap">
@@ -102,7 +102,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
             <h2 id="rack-title">{t('rack.title')}</h2>
             <span class="rack-dates" id="rack-dates"></span>
           </div>
-          <ol class="slots" id="slots">
+          <ol class="slots" id="slots" aria-hidden="true">
             {slots.map((n) => (
               <li class="slot" data-room={n} style={`--i:${n};--tilt:${tilt(n)}deg`}>
                 <span class="hook"></span>
@@ -112,9 +112,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
             ))}
           </ol>
           <ul class="legend">
-            <li><span class="fob"></span>{t('rack.legendFree')}</li>
             <li><span class="fob mine"></span>{t('rack.legendMine')}</li>
-            <li><span class="hook"></span>{t('rack.legendTaken')}</li>
           </ul>
         </div>
       </div>
@@ -243,8 +241,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
 </Layout>
 
 <script>
-  import { readStay, writeStay, quote, money, fmtDate, plural, iso, parse, plusDays, stayQuery, type Stay } from '../lib/stay';
-  import { availability } from '../lib/api';
+  import { readStay, writeStay, quote, money, fmtDate, iso, parse, plusDays, stayQuery, type Stay } from '../lib/stay';
   import { sunTimes, hhmm, cairoOffsetHours } from '../lib/sun';
   import { $, fill, fillFolio, strings } from '../lib/ui';
   import { SITE, SEA_TEMP, PLANS } from '../data/site';
@@ -254,8 +251,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
   const fIn = $<HTMLInputElement>('#f-in'), fOut = $<HTMLInputElement>('#f-out'), fRooms = $<HTMLSelectElement>('#f-rooms');
   const slots = [...document.querySelectorAll<HTMLElement>('.slot')];
   const radios = [...document.querySelectorAll<HTMLInputElement>('input[name=plan]')];
-  const count = $('#count'), cta = $<HTMLAnchorElement>('#cta');
-  const FEW = 3; // say "last rooms" from this many down
+  const cta = $<HTMLAnchorElement>('#cta');
 
   // "Sharm, today": sunset, hours of daylight and the month's usual sea temperature
   const now = new Date();
@@ -276,7 +272,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
   let stay = readStay();
   fIn.min = iso(new Date());
 
-  async function render() {
+  function render() {
     fIn.value = stay.in; fOut.value = stay.out; fRooms.value = String(stay.rooms);
     fOut.min = iso(plusDays(parse(stay.in), 1));
     for (const r of radios) r.checked = r.value === stay.plan;
@@ -289,38 +285,20 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
     }
     const q = fillFolio(document, stay, S, lang);
 
-    // the key board
-    let free: number[];
-    try { free = await availability(stay); } catch (e) {
-      count.textContent = fill(S.rack.error, { msg: e instanceof Error ? e.message : String(e) });
-      count.classList.add('warn');
-      throw e;
-    }
-    const enough = free.length >= stay.rooms;
-    const mine = new Set(enough ? free.slice(0, stay.rooms) : []);
+    // the key board is a drawing, not availability: one yellow key for each room asked for
     for (const el of slots) {
-      const n = Number(el.dataset.room);
-      const isFree = free.includes(n);
-      el.classList.toggle('taken', !isFree);
-      el.classList.toggle('mine', mine.has(n));
+      el.classList.toggle('mine', Number(el.dataset.room) <= stay.rooms);
       el.classList.remove('swing');
-      el.setAttribute('aria-label', `${fill(S.rack.roomLabel, { n })}: ${isFree ? S.rack.legendFree : S.rack.legendTaken}`);
     }
     void document.body.offsetWidth; // restart the swing
     for (const el of slots) el.classList.add('swing');
-    // no running count of free rooms: the guest learns whether there is a room, and when only a few are left
-    count.textContent = !free.length ? S.rack.none : !enough ? fill(S.rack.short, { n: free.length }) : free.length <= FEW ? plural(S.rack.few, free.length, lang) : S.rack.free;
-    count.classList.toggle('warn', !enough);
 
-    // the button: on to the booking page, or WhatsApp when the dates have no price yet
-    const off = !q.onRequest && !enough;
+    // the button: on to the request form, or WhatsApp when the dates have no price yet
     cta.textContent = q.onRequest ? S.folio.ask : S.folio.cta;
     cta.href = q.onRequest
       ? `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(fill(S.folio.waAsk, { in: fmtDate(stay.in, lang), out: fmtDate(stay.out, lang) }))}`
       : `${cta.dataset.book}?${stayQuery(stay)}`;
     cta.target = q.onRequest ? '_blank' : '';
-    cta.classList.toggle('off', off);
-    cta.setAttribute('aria-disabled', String(off));
   }
 
   const update = (patch: Partial<Stay>) => { stay = writeStay({ ...stay, ...patch }); render(); };
@@ -332,11 +310,5 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
   fOut.addEventListener('change', () => fOut.value && update({ out: fOut.value }));
   fRooms.addEventListener('change', () => update({ rooms: Number(fRooms.value) }));
   for (const r of radios) r.addEventListener('change', () => update({ plan: r.value as Stay['plan'] }));
-  cta.addEventListener('click', (e) => {
-    if (!cta.classList.contains('off')) return;
-    e.preventDefault(); // not enough rooms: back to the dates
-    $('#bar').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
-
   render();
 </script>

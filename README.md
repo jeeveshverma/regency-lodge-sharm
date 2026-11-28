@@ -1,6 +1,6 @@
-# Regency Lodge, Sharm El Sheikh (ريجينسي لودج)
+# Regency Royal Sharm, Sharm El Sheikh (ريجينسي رويال شرم)
 
-Website and booking system for the lodge. Arabic at the root, English under `/en/`. Astro, built in the
+Website and reservation requests for the hotel (first briefed as Regency Lodge; the repo keeps that name). Arabic at the root, English under `/en/`. Astro, built in the
 same way as `giza-pyramids-view-guest-house`.
 
 ## Design (version 2, 2026-11-21)
@@ -14,14 +14,25 @@ white layout) is the git tag `v1`.
 
 ## State
 
-Steps 1 and 2 of 4: the home page, the booking page (details, review, confirmation with the booking
-number) and "My booking" (find by number + phone, cancel).
+**Hotel's requirements (2026-11-28).** The hotel runs reservations by hand in Excel, so the site takes
+reservation *requests*, not instant bookings. Branding is "Regency Royal Sharm" with their approved logo.
+They want: Arabic + English, fast and light; accurate room categories, photos, facilities and prices; a
+request form that reaches the booking team; the guest told the request is pending hotel confirmation; the
+team confirms or declines by hand; payment on arrival or online through Paymob in EGP, online only after
+the hotel confirms; a simple dashboard for requests, prices, photos and content; deployment on their
+existing domain with full access and ownership.
 
-**There is no backend yet.** `src/lib/api.ts` keeps bookings in the visitor's own browser
-(localStorage) on top of sample availability (`src/lib/avail.ts`). The hotel learns of a booking only
-when the guest presses "Send the booking on WhatsApp" on the confirmation page. The real backend
-(Cloudflare Pages + D1, or the VPS: not decided) replaces the four functions in `api.ts`; the pages
-stay as they are. Then: the admin dashboard. Guests pay at the hotel.
+Done on the public pages: the name, the request flow (details, review, "pending hotel confirmation" with a
+request number), the payment choice, and "My reservation" (status, cancel). The key board in the hero is a
+drawing only: one yellow key per room asked for, no availability.
+
+**There is no backend yet.** `src/lib/api.ts` keeps requests in the visitor's own browser (localStorage).
+The hotel learns of a request only when the guest presses "Send the request on WhatsApp". The backend
+replaces the three functions in `api.ts` and adds: email to the booking team and to the guest, confirm /
+decline, the Paymob payment link after confirmation, and the dashboard. Hosting is not decided.
+
+Still needed from the hotel: the logo file, the room categories with prices, their domain and hosting
+access, Paymob keys, the booking team's email address.
 
 ## Run
 

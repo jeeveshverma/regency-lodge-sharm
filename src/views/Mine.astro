@@ -1,5 +1,5 @@
 ---
-/** "My booking": the guest opens a booking with its number and phone, and can cancel it. */
+/** "My reservation": the guest opens a request with its number and phone, sees whether the hotel has confirmed it, and can cancel it. */
 import Layout from '../components/Layout.astro';
 import Folio from '../components/Folio.astro';
 import { useT, type Lang } from '../i18n';
@@ -31,6 +31,7 @@ const strings = { folio: branch('folio'), plans: branch('plans'), book: branch('
             <div><dt>{t('book.party')}</dt><dd data-m="party"></dd></div>
             <div><dt>{t('book.bed')}</dt><dd data-m="bed"></dd></div>
             <div><dt>{t('book.arrival')}</dt><dd data-m="arrival"></dd></div>
+            <div><dt>{t('book.pay')}</dt><dd data-m="pay"></dd></div>
           </dl>
           <p class="review-note" id="m-msg" role="status"></p>
           <button class="btn btn-danger" id="cancel" type="button">{t('mine.cancel')}</button>
@@ -67,14 +68,16 @@ const strings = { folio: branch('folio'), plans: branch('plans'), book: branch('
     set('party', fill(B.partyV, { a: b.adults, c: b.children }));
     set('bed', S.room[b.bed]);
     set('arrival', B[b.arrival]);
-    $('[data-m=status]').classList.toggle('is-cancelled', b.status === 'cancelled');
+    set('pay', b.pay === 'online' ? B.payOnline : B.payArrival);
+    $('[data-m=status]').classList.toggle('is-cancelled', b.status === 'cancelled' || b.status === 'declined');
+    $('[data-m=status]').classList.toggle('is-pending', b.status === 'pending');
     fillFolio($('#m-folio'), b, S, lang);
     $('#m-folio').hidden = false;
     $('#found').hidden = false;
-    cancel.hidden = b.status === 'cancelled';
+    cancel.hidden = b.status === 'cancelled' || b.status === 'declined';
     cancel.textContent = M.cancel;
     cancel.dataset.armed = '';
-    $('#m-msg').textContent = b.status === 'cancelled' ? M.cancelledMsg : '';
+    $('#m-msg').textContent = { pending: M.pendingMsg, confirmed: '', declined: M.declinedMsg, cancelled: M.cancelledMsg }[b.status];
   }
 
   form.addEventListener('submit', async (e) => {

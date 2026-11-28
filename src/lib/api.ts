@@ -1,23 +1,27 @@
 /**
- * The booking API as the pages see it: availability, create, find, cancel.
+ * The reservation API as the pages see it: send a request, find it, cancel it.
  *
- * PREVIEW implementation: bookings are kept in this browser's localStorage on top of the sample
- * availability in avail.ts, so the whole flow can be tried on a static page. The real backend
- * replaces the bodies of these four functions with calls to /api/*; the pages do not change.
+ * The hotel checks availability by hand, so a request starts as `pending` and the booking team
+ * confirms or declines it. Nothing here knows which rooms are free.
+ *
+ * PREVIEW implementation: requests are kept in this browser's localStorage, so the whole flow can be
+ * tried on a static page. The real backend replaces the bodies of these three functions with calls
+ * to /api/*; the pages do not change.
  */
-import { freeRooms as sampleFree } from './avail';
 import { quote, type Stay } from './stay';
 import type { PlanId } from '../data/site';
 
-export interface Guest { name: string; phone: string; email: string; adults: number; children: number; bed: 'double' | 'twin'; arrival: string; note: string }
-export interface Booking extends Guest { ref: string; in: string; out: string; rooms: number; plan: PlanId; nights: number; rate: number; total: number; status: 'confirmed' | 'cancelled'; created: string; roomNos: number[] }
+export type Pay = 'arrival' | 'online';
+export type Status = 'pending' | 'confirmed' | 'declined' | 'cancelled';
+export interface Guest { name: string; phone: string; email: string; adults: number; children: number; bed: 'double' | 'twin'; arrival: string; pay: Pay; note: string }
+export interface Booking extends Guest { ref: string; in: string; out: string; rooms: number; plan: PlanId; nights: number; rate: number; total: number; status: Status; created: string }
 
-export type BookingErrorCode = 'no_rooms' | 'on_request' | 'not_found' | 'storage';
+export type BookingErrorCode = 'on_request' | 'not_found' | 'storage';
 export class BookingError extends Error {
   constructor(public code: BookingErrorCode, cause?: unknown) { super(code, { cause }); }
 }
 
-const KEY = 'rl-bookings';
+const KEY = 'rr-requests';
 function load(): Booking[] {
   let raw: string | null;
   try { raw = localStorage.getItem(KEY); } catch (e) { throw new BookingError('storage', e); }
@@ -29,33 +33,24 @@ function save(list: Booking[]) {
 
 /** Phone numbers compare by their digits, without a leading 0, 20 or 0020. */
 export const phoneKey = (p: string) => p.replace(/\D/g, '').replace(/^(0020|20|0)/, '');
-const overlaps = (b: { in: string; out: string }, s: { in: string; out: string }) => b.in < s.out && s.in < b.out;
-
-/** Room numbers free on every night of the stay. */
-export async function availability(s: Stay): Promise<number[]> {
-  const held = new Set(load().filter((b) => b.status === 'confirmed' && overlaps(b, s)).flatMap((b) => b.roomNos));
-  return sampleFree(s).filter((r) => !held.has(r));
-}
 
 function newRef(): string {
   const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O or 1/I
-  return 'RL-' + [...crypto.getRandomValues(new Uint8Array(5))].map((b) => abc[b % abc.length]).join('');
+  return 'RR-' + [...crypto.getRandomValues(new Uint8Array(5))].map((b) => abc[b % abc.length]).join('');
 }
 
-/** Hold the rooms. Fails with `no_rooms` if they went in the meantime, `on_request` if the dates have no price. */
+/** Record the request as pending. Fails with `on_request` if the dates have no price. */
 export async function createBooking(s: Stay, g: Guest): Promise<Booking> {
   const q = quote(s);
   if (q.onRequest) throw new BookingError('on_request');
-  const free = await availability(s);
-  if (free.length < s.rooms) throw new BookingError('no_rooms');
-  const b: Booking = { ...g, ref: newRef(), in: s.in, out: s.out, rooms: s.rooms, plan: s.plan, nights: q.nights, rate: q.rate, total: q.total, status: 'confirmed', created: new Date().toISOString(), roomNos: free.slice(0, s.rooms) };
+  const b: Booking = { ...g, ref: newRef(), in: s.in, out: s.out, rooms: s.rooms, plan: s.plan, nights: q.nights, rate: q.rate, total: q.total, status: 'pending', created: new Date().toISOString() };
   save([...load(), b]);
   return b;
 }
 
 const same = (b: Booking, ref: string, phone: string) => b.ref === ref.trim().toUpperCase() && phoneKey(b.phone) === phoneKey(phone);
 
-/** A booking by its number and the phone it was made with. */
+/** A request by its number and the phone it was made with. */
 export async function findBooking(ref: string, phone: string): Promise<Booking> {
   const b = load().find((x) => same(x, ref, phone));
   if (!b) throw new BookingError('not_found');

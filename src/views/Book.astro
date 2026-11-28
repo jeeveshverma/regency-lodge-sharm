@@ -1,5 +1,5 @@
 ---
-/** The booking page: the guest's details, a review, then the confirmation with the booking number on a key tag. */
+/** The reservation request: the guest's details, a review, then "pending hotel confirmation" with the request number on a key tag. */
 import Layout from '../components/Layout.astro';
 import Folio from '../components/Folio.astro';
 import { useT, path, type Lang } from '../i18n';
@@ -37,6 +37,10 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
           <label>{t('book.arrival')}
             <select id="g-arrival" name="arrival">{arrivals.map((a) => <option value={a} selected={a === 'arr2'}>{t(`book.${a}`)}</option>)}</select>
           </label>
+          <label class="f-wide">{t('book.pay')}
+            <select id="g-pay" name="pay"><option value="arrival">{t('book.payArrival')}</option><option value="online">{t('book.payOnline')}</option></select>
+            <span class="hint">{t('book.payHint')}</span>
+          </label>
           <label class="f-wide">{t('book.note')}<textarea id="g-note" name="note" rows="3"></textarea></label>
           <button class="btn f-wide" type="submit">{t('book.next')}</button>
         </form>
@@ -48,10 +52,11 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
             <div><dt>{t('book.party')}</dt><dd data-r="party"></dd></div>
             <div><dt>{t('book.bed')}</dt><dd data-r="bed"></dd></div>
             <div><dt>{t('book.arrival')}</dt><dd data-r="arrival"></dd></div>
+            <div><dt>{t('book.pay')}</dt><dd data-r="pay"></dd></div>
             <div data-r-row="note"><dt>{t('book.noteShort')}</dt><dd data-r="note"></dd></div>
           </dl>
           <p class="review-note">{t('book.times', { in: SITE.checkIn, out: SITE.checkOut })}</p>
-          <p class="review-note">{t('book.payNote')}</p>
+          <p class="review-note">{t('book.pendingNote')}</p>
           <p class="blocked" id="err" role="alert" hidden></p>
           <button class="btn" id="confirm" type="button">{t('book.confirm')}</button>
           <button class="link" id="back" type="button">{t('book.back')}</button>
@@ -82,7 +87,7 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
 
 <script>
   import { readStay, stayQuery, fmtDate, money, quote } from '../lib/stay';
-  import { availability, createBooking, BookingError, phoneKey, type Booking, type Guest } from '../lib/api';
+  import { createBooking, BookingError, phoneKey, type Booking, type Guest } from '../lib/api';
   import { $, fill, fillFolio, stayLine, strings } from '../lib/ui';
   import { SITE } from '../data/site';
 
@@ -92,7 +97,7 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
   const root = $('.book');
   const stay = readStay();
   const q = fillFolio(document, stay, S, lang);
-  const DRAFT = 'rl-guest';
+  const DRAFT = 'rr-guest';
 
   const panels = [1, 2, 3].map((n) => $(`#step-${n}`));
   function show(n: number, scroll = true) {
@@ -133,7 +138,7 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
 
   function readGuest(): Guest {
     const v = (k: string) => (form.elements.namedItem(k) as HTMLInputElement).value.trim();
-    return { name: v('name'), phone: v('phone'), email: v('email'), adults: Number(v('adults')), children: Number(v('children')), bed: v('bed') as Guest['bed'], arrival: v('arrival'), note: v('note') };
+    return { name: v('name'), phone: v('phone'), email: v('email'), adults: Number(v('adults')), children: Number(v('children')), bed: v('bed') as Guest['bed'], arrival: v('arrival'), pay: v('pay') as Guest['pay'], note: v('note') };
   }
   function validate(g: Guest): boolean {
     const errors: Record<string, string> = {
@@ -152,6 +157,7 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
     return !first;
   }
 
+  const payLabel = (p: Guest['pay']) => (p === 'online' ? B.payOnline : B.payArrival);
   let guest: Guest;
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -163,6 +169,7 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
     set('party', fill(B.partyV, { a: guest.adults, c: guest.children }));
     set('bed', S.room[guest.bed]);
     set('arrival', B[guest.arrival]);
+    set('pay', payLabel(guest.pay));
     set('note', guest.note);
     $('[data-r-row=note]').hidden = !guest.note;
     $('#err').hidden = true;
@@ -182,7 +189,8 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
       `${B.bed}: ${S.room[b.bed]}`,
       fill(B.partyV, { a: b.adults, c: b.children }),
       `${B.arrival}: ${B[b.arrival]}`,
-      `${S.folio.total}: ${money(b.total)} ${S.folio.egp} (${B.payWa})`,
+      `${S.folio.total}: ${money(b.total)} ${S.folio.egp}`,
+      `${B.pay}: ${payLabel(b.pay)}`,
       b.note ? `${B.noteShort}: ${b.note}` : '',
     ].filter(Boolean).join('\n');
   }
@@ -200,22 +208,14 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
       show(3);
     } catch (e) {
       const code = e instanceof BookingError ? e.code : '';
-      err.textContent = code === 'no_rooms' ? B.errNoRooms : code === 'on_request' ? B.blockedPrice : code === 'storage' ? B.errStorage : fill(B.errUnknown, { msg: e instanceof Error ? e.message : String(e) });
+      err.textContent = code === 'on_request' ? B.blockedPrice : code === 'storage' ? B.errStorage : fill(B.errUnknown, { msg: e instanceof Error ? e.message : String(e) });
       err.hidden = false;
       confirm.disabled = false;
       if (!code) throw e;
     }
   });
 
-  // open on the form, unless the stay cannot be booked as it stands
-  (async () => {
-    if (quote(stay).onRequest) return block(B.blockedPrice);
-    try {
-      if ((await availability(stay)).length < stay.rooms) return block(B.blockedRooms);
-    } catch (e) {
-      block(e instanceof BookingError && e.code === 'storage' ? B.errStorage : fill(B.errUnknown, { msg: e instanceof Error ? e.message : String(e) }));
-      throw e;
-    }
-    show(1, false);
-  })();
+  // open on the form, unless the dates have no price yet
+  if (quote(stay).onRequest) block(B.blockedPrice);
+  else show(1, false);
 </script>

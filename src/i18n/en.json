@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Regency Lodge, Sharm El Sheikh | Book your room direct",
-    "desc": "Twenty double rooms around the pool in El Hadaba, Sharm El Sheikh. From EGP {price} per room per night. See which rooms are free and book direct; pay on arrival."
+    "title": "Regency Royal Sharm, Sharm El Sheikh | Request your room direct",
+    "desc": "Rooms around the pool in El Hadaba, Sharm El Sheikh. From EGP {price} per room per night. Send a reservation request direct; the hotel confirms it, and you pay online or on arrival."
   },
   "nav": {
     "book": "Book",
@@ -10,13 +10,13 @@
     "contact": "Contact",
     "lang": "العربية",
     "skip": "Skip to content",
-    "mine": "My booking"
+    "mine": "My reservation"
   },
   "hero": {
     "kicker": "El Hadaba · Sharm El Sheikh",
     "h1a": "Sleep here.",
     "h1b": "Spend the rest on the sea.",
-    "lead": "A double room on the pool for EGP {price} a night, up on El Hadaba, seven minutes' walk from the dive centre. Pick your dates and take your key off the board."
+    "lead": "A double room on the pool for EGP {price} a night, up on El Hadaba, seven minutes' walk from the dive centre. Pick your dates and send your request; our booking team confirms it."
   },
   "bar": {
     "in": "Check-in",
@@ -25,15 +25,8 @@
   },
   "rack": {
     "title": "The key board",
-    "free": "Available for your dates",
-    "few": "Last room for your dates|Last {n} rooms for your dates",
-    "none": "No rooms are free on these dates. Try other dates.",
-    "short": "Only {n} free on these dates. Ask for fewer rooms or change the dates.",
-    "legendFree": "Key hanging: room free",
-    "legendTaken": "Empty hook: booked",
-    "legendMine": "Yellow key: yours",
-    "roomLabel": "Room {n}",
-    "error": "Could not check availability: {msg}"
+    "legendMine": "Yellow keys: the rooms you are asking for",
+    "note": "Send your request. Our booking team checks availability and confirms."
   },
   "photo": {
     "pool": "The pool with the rooms looking onto it",
@@ -63,15 +56,15 @@
     "rate": "Per night",
     "total": "Total",
     "egp": "EGP",
-    "pay": "Pay on arrival. Nothing is charged now.",
-    "cta": "Book now",
+    "pay": "Nothing is charged now. After the hotel confirms, pay online or on arrival.",
+    "cta": "Request to book",
     "onRequest": "Prices for these dates are not published yet.",
     "ask": "Ask us on WhatsApp",
-    "waAsk": "Hello, I would like the price of a room at Regency Lodge from {in} to {out}."
+    "waAsk": "Hello, I would like the price of a room at Regency Royal Sharm from {in} to {out}."
   },
   "room": {
     "title": "The room",
-    "lead": "A standard double room looking onto the pool. All twenty rooms are the same kind, so there are no surprises when you arrive.",
+    "lead": "A standard double room looking onto the pool, with one double bed or two singles.",
     "bed": "Bed",
     "bedV": "One double or two singles, your choice",
     "guests": "Sleeps",
@@ -127,10 +120,10 @@
     "title": "Why book here?",
     "a": "The same price",
     "aT": "What you see here is what you hear on the phone and what you pay at reception.",
-    "b": "No deposit",
-    "bT": "We hold your room at once, and you pay on arrival.",
-    "c": "The lodge answers",
-    "cT": "You talk to reception directly, not to an agent."
+    "b": "Nothing to pay to ask",
+    "bT": "Sending a request costs nothing. You pay only after the hotel confirms: online or on arrival.",
+    "c": "The hotel answers",
+    "cT": "Our own booking team checks your dates and answers you, not an agent."
   },
   "contact": {
     "title": "Contact",
@@ -140,15 +133,15 @@
     "whatsapp": "WhatsApp"
   },
   "foot": {
-    "rights": "Regency Lodge, Sharm El Sheikh",
+    "rights": "Regency Royal Sharm, Sharm El Sheikh",
     "credit": "Website by Jeevesh"
   },
   "book": {
-    "metaTitle": "Complete your booking | Regency Lodge",
-    "title": "Complete your booking",
+    "metaTitle": "Reservation request | Regency Royal Sharm",
+    "title": "Your reservation request",
     "s1": "Your details",
     "s2": "Review",
-    "s3": "Booked",
+    "s3": "Sent",
     "change": "Change dates or rooms",
     "name": "Full name",
     "phone": "Phone number (WhatsApp)",
@@ -164,43 +157,48 @@
     "note": "Notes (optional)",
     "next": "Continue to review",
     "back": "Back to edit details",
-    "confirm": "Confirm booking",
+    "confirm": "Send request",
     "errName": "Enter your full name.",
     "errPhone": "Enter a valid phone number.",
     "errEmail": "That email address is not valid.",
-    "reviewTitle": "Review your booking",
+    "reviewTitle": "Review your request",
     "guest": "Guest",
     "party": "Guests",
     "partyV": "Adults: {a} · Children: {c}",
     "times": "Check-in from {in} · Check-out by {out}",
-    "payNote": "You pay at reception on arrival. We ask for no card and no deposit.",
-    "blockedRooms": "These dates are no longer free for the number of rooms you asked for.",
     "blockedPrice": "Prices for these dates are not published yet.",
     "toHome": "Back to choose dates",
-    "errNoRooms": "Sorry, the room was taken a moment ago. Choose other dates.",
-    "errStorage": "The booking could not be saved in this browser. Try another browser or message us on WhatsApp.",
+    "errStorage": "The request could not be saved in this browser. Try another browser or message us on WhatsApp.",
     "errUnknown": "Something went wrong: {msg}",
-    "doneTitle": "Your booking is recorded",
-    "doneLead": "Keep your booking number, then send the booking to the lodge on WhatsApp so reception can confirm it.",
-    "ref": "Booking number",
-    "sendWa": "Send the booking on WhatsApp",
-    "viewMine": "View my booking",
-    "waHead": "New booking from the Regency Lodge website",
-    "payWa": "Pay on arrival",
-    "noteShort": "Notes"
+    "doneTitle": "Your request is pending hotel confirmation",
+    "doneLead": "Our booking team checks availability and answers you by WhatsApp or phone. Keep your request number, then send the request to the hotel on WhatsApp.",
+    "ref": "Request number",
+    "sendWa": "Send the request on WhatsApp",
+    "viewMine": "View my request",
+    "waHead": "New reservation request from the Regency Royal Sharm website",
+    "noteShort": "Notes",
+    "pay": "Payment",
+    "payArrival": "Pay on arrival, at reception",
+    "payOnline": "Pay online by card, in EGP (Paymob)",
+    "payHint": "Online payment opens only after the hotel confirms your reservation.",
+    "pendingNote": "Nothing is charged now. The hotel checks availability first, then confirms or declines your request."
   },
   "mine": {
-    "metaTitle": "My booking | Regency Lodge",
-    "title": "My booking",
-    "lead": "Enter your booking number and the phone number you booked with.",
-    "find": "Show my booking",
-    "notFound": "No booking matches these details. Check the booking number and the phone number.",
+    "metaTitle": "My reservation | Regency Royal Sharm",
+    "title": "My reservation",
+    "lead": "Enter your request number and the phone number you used.",
+    "find": "Show my reservation",
+    "notFound": "No reservation matches these details. Check the request number and the phone number.",
     "status": "Status",
-    "confirmed": "Confirmed",
+    "confirmed": "Confirmed by the hotel",
     "cancelled": "Cancelled",
-    "cancel": "Cancel this booking",
+    "cancel": "Cancel this request",
     "cancelSure": "Press again to confirm the cancellation",
-    "cancelledMsg": "The booking is cancelled."
+    "cancelledMsg": "The request is cancelled.",
+    "pending": "Pending hotel confirmation",
+    "declined": "Declined by the hotel",
+    "pendingMsg": "The hotel has not answered yet. You will hear from our booking team.",
+    "declinedMsg": "The hotel could not accept this request. Try other dates or message us on WhatsApp."
   },
   "sticker": {
     "from": "from",
@@ -215,14 +213,14 @@
     "diveV": "{n} min"
   },
   "day": {
-    "title": "A day from the lodge door",
+    "title": "A day from the hotel door",
     "lead": "Nobody comes to Sharm to sit in the room. This is what is waiting outside it.",
     "am": "Morning",
     "amT": "The reef",
     "amB": "El Hadaba stands above the Ras Um Sid reef, and the dive centre is minutes from the door. A mask and fins, and the Red Sea does the rest.",
     "pm": "Afternoon",
     "pmT": "The pool",
-    "pmB": "Come back when the sun is at its strongest. The pool is in the middle of the lodge, with umbrellas and sunbeds around it and your room two steps away.",
+    "pmB": "Come back when the sun is at its strongest. The pool is in the middle of the hotel, with umbrellas and sunbeds around it and your room two steps away.",
     "eve": "Evening",
     "eveT": "Dinner and the market",
     "eveB": "El Hadaba's restaurants are a walk away, and the Old Market and Al Sahaba mosque are at their best after sunset.",
