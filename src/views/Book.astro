@@ -55,7 +55,7 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
             <div><dt>{t('book.pay')}</dt><dd data-r="pay"></dd></div>
             <div data-r-row="note"><dt>{t('book.noteShort')}</dt><dd data-r="note"></dd></div>
           </dl>
-          <p class="review-note">{t('book.times', { in: SITE.checkIn, out: SITE.checkOut })}</p>
+          <p class="review-note" id="times">{t('book.times', { in: SITE.checkIn, out: SITE.checkOut })}</p>
           <p class="review-note">{t('book.pendingNote')}</p>
           <p class="blocked" id="err" role="alert" hidden></p>
           <button class="btn" id="confirm" type="button">{t('book.confirm')}</button>
@@ -64,7 +64,7 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
 
         <section class="done" id="step-3" hidden>
           <h2>{t('book.doneTitle')}</h2>
-          <p class="lead">{t('book.doneLead')}</p>
+          <p class="lead" id="done-lead">{t('book.doneLead')}</p>
           <div class="tag">
             <svg class="tag-key" width="34" height="85" aria-hidden="true"><use href="#key" /></svg>
             <div class="tag-plate"><span>{t('book.ref')}</span><b class="num" id="ref" dir="ltr"></b></div>
@@ -87,16 +87,26 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
 
 <script>
   import { readStay, stayQuery, fmtDate, money, quote } from '../lib/stay';
-  import { createBooking, BookingError, phoneKey, type Booking, type Guest } from '../lib/api';
-  import { $, fill, fillFolio, stayLine, strings } from '../lib/ui';
+  import { createBooking, phoneKey, type Booking, type Guest } from '../lib/api';
+  import { $, fill, fillFolio, stayLine, strings, errorText } from '../lib/ui';
   import { SITE } from '../data/site';
+  import { loadLive, pickRoom } from '../lib/live';
 
-  const lang = document.documentElement.lang;
+  const lang = document.documentElement.lang as 'ar' | 'en';
   const S = strings();
   const B = S.book;
   const root = $('.book');
   const stay = readStay();
-  const q = fillFolio(document, stay, S, lang);
+  // with the backend: the chosen room's prices and limits, the hotel's times, and whether online payment is on
+  const live = await loadLive();
+  const room = live ? pickRoom(live, stay.room) : null;
+  if (room) stay.room = room.id;
+  if (live) {
+    $('#times').textContent = fill(B.times, { in: live.checkIn, out: live.checkOut });
+    $('#done-lead').textContent = B.doneLeadApi;
+    if (!live.payOnline) $('#g-pay option[value=online]').remove();
+  }
+  const q = fillFolio(document, stay, S, lang, { room: live && live.rooms.length > 1 ? room?.name[lang] : undefined });
   const DRAFT = 'rr-guest';
 
   const panels = [1, 2, 3].map((n) => $(`#step-${n}`));
@@ -124,8 +134,8 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
     for (let i = from; i <= to; i++) sel.add(new Option(String(i), String(i), false, i === pick));
   };
   const form = $<HTMLFormElement>('#step-1');
-  options($<HTMLSelectElement>('#g-adults'), 1, stay.rooms * 2, stay.rooms * 2);
-  options($<HTMLSelectElement>('#g-children'), 0, stay.rooms * 2, 0);
+  options($<HTMLSelectElement>('#g-adults'), 1, stay.rooms * (room?.adults ?? 2), stay.rooms * Math.min(2, room?.adults ?? 2));
+  options($<HTMLSelectElement>('#g-children'), 0, stay.rooms * (room?.children ?? 2), 0);
 
   // a draft of the form survives a reload or a trip back to change the dates
   try {
@@ -185,6 +195,7 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
       `${S.folio.in}: ${fmtDate(b.in, lang)}`,
       `${S.folio.out}: ${fmtDate(b.out, lang)}`,
       `${S.folio.stay}: ${stayLine(b, b.nights, S, lang)}`,
+      b.roomName && live && live.rooms.length > 1 ? `${S.folio.room}: ${b.roomName[lang]}` : '',
       `${S.folio.plan}: ${S.plans[b.plan]}`,
       `${B.bed}: ${S.room[b.bed]}`,
       fill(B.partyV, { a: b.adults, c: b.children }),
@@ -200,18 +211,18 @@ const arrivals = ['arr1', 'arr2', 'arr3', 'arr4'];
     confirm.disabled = true;
     const err = $('#err');
     try {
-      const b = await createBooking(stay, guest);
+      const b = await createBooking(stay, guest, lang);
       try { sessionStorage.removeItem(DRAFT); } catch { /* nothing to clear */ }
       $('#ref').textContent = b.ref;
       $<HTMLAnchorElement>('#send-wa').href = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(waText(b))}`;
       $<HTMLAnchorElement>('#view-mine').href = `${root.dataset.mine}?ref=${encodeURIComponent(b.ref)}`;
       show(3);
     } catch (e) {
-      const code = e instanceof BookingError ? e.code : '';
-      err.textContent = code === 'on_request' ? B.blockedPrice : code === 'storage' ? B.errStorage : fill(B.errUnknown, { msg: e instanceof Error ? e.message : String(e) });
+      const m = errorText(e, S);
+      err.textContent = m.text;
       err.hidden = false;
       confirm.disabled = false;
-      if (!code) throw e;
+      if (!m.known) throw e;
     }
   });
 

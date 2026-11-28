@@ -15,7 +15,7 @@ export const SITE = {
 };
 
 export type PlanId = 'ro' | 'bb' | 'hb';
-/** EGP per room per night. */
+/** EGP per room per night. With the backend, lib/live.ts overwrites these with the chosen room's prices from the dashboard. */
 export const PLANS: { id: PlanId; price: number }[] = [
   { id: 'ro', price: 1500 },
   { id: 'bb', price: 1600 },
@@ -23,8 +23,8 @@ export const PLANS: { id: PlanId; price: number }[] = [
 ];
 /** The lowest nightly price: the one the headline and the page description quote. */
 export const FROM_PRICE = Math.min(...PLANS.map((p) => p.price));
-/** Last night the published prices cover. */
-export const RATES_UNTIL = '2026-12-21';
+/** Last night the published prices cover; '' = no limit. The dashboard can change it (lib/live.ts). */
+export const RATES = { until: '2026-12-21' };
 
 /** Walking minutes from the door (Tripadvisor's figures for the listing). */
 export const WALKS: { min: number; ar: string; en: string; kindAr: string; kindEn: string }[] = [

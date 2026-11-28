@@ -8,11 +8,12 @@ const { t } = useT(Astro.props.lang);
 <aside class="folio" aria-labelledby="folio-title">
   <header>
     <h3 id="folio-title">{t('folio.title')}</h3>
-    <p><span lang="ar">{SITE.name.ar}</span> · <span lang="en">{SITE.name.en}</span></p>
+    <p><span lang="ar" data-live="name-ar">{SITE.name.ar}</span> · <span lang="en" data-live="name-en">{SITE.name.en}</span></p>
   </header>
   <dl>
     <div><dt>{t('folio.in')}</dt><dd data-f="in"></dd></div>
     <div><dt>{t('folio.out')}</dt><dd data-f="out"></dd></div>
+    <div data-room-row hidden><dt>{t('folio.room')}</dt><dd data-f="room"></dd></div>
     <div><dt>{t('folio.stay')}</dt><dd data-f="stay"></dd></div>
     <div><dt>{t('folio.plan')}</dt><dd data-f="plan"></dd></div>
     <div data-priced><dt>{t('folio.rate')}</dt><dd class="num" data-f="rate"></dd></div>

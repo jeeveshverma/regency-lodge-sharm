@@ -33,7 +33,9 @@ const strings = { folio: branch('folio'), plans: branch('plans'), book: branch('
             <div><dt>{t('book.arrival')}</dt><dd data-m="arrival"></dd></div>
             <div><dt>{t('book.pay')}</dt><dd data-m="pay"></dd></div>
           </dl>
+          <p class="review-note" id="m-note" hidden></p>
           <p class="review-note" id="m-msg" role="status"></p>
+          <a class="btn" id="pay-now" hidden>{t('mine.payNow')}</a>
           <button class="btn btn-danger" id="cancel" type="button">{t('mine.cancel')}</button>
         </section>
       </div>
@@ -43,10 +45,11 @@ const strings = { folio: branch('folio'), plans: branch('plans'), book: branch('
 </Layout>
 
 <script>
-  import { findBooking, cancelBooking, BookingError, type Booking } from '../lib/api';
-  import { $, fill, fillFolio, strings } from '../lib/ui';
+  import { findBooking, cancelBooking, type Booking } from '../lib/api';
+  import { $, fill, fillFolio, strings, errorText } from '../lib/ui';
 
-  const lang = document.documentElement.lang;
+  const lang = document.documentElement.lang as 'ar' | 'en';
+  const KEPT = 'rr-mine'; // the last request opened in this tab, so coming back from the payment page shows it again
   const S = strings();
   const M = S.mine, B = S.book;
   const form = $<HTMLFormElement>('#find'), err = $('#m-err'), cancel = $<HTMLButtonElement>('#cancel');
@@ -54,10 +57,10 @@ const strings = { folio: branch('folio'), plans: branch('plans'), book: branch('
   ref.value = new URLSearchParams(location.search).get('ref') ?? '';
 
   function fail(e: unknown) {
-    const code = e instanceof BookingError ? e.code : '';
-    err.textContent = code === 'not_found' ? M.notFound : code === 'storage' ? B.errStorage : fill(B.errUnknown, { msg: e instanceof Error ? e.message : String(e) });
+    const m = errorText(e, S);
+    err.textContent = m.text;
     err.hidden = false;
-    if (!code) throw e;
+    if (!m.known) throw e;
   }
 
   function showBooking(b: Booking) {
@@ -71,13 +74,20 @@ const strings = { folio: branch('folio'), plans: branch('plans'), book: branch('
     set('pay', b.pay === 'online' ? B.payOnline : B.payArrival);
     $('[data-m=status]').classList.toggle('is-cancelled', b.status === 'cancelled' || b.status === 'declined');
     $('[data-m=status]').classList.toggle('is-pending', b.status === 'pending');
-    fillFolio($('#m-folio'), b, S, lang);
+    fillFolio($('#m-folio'), b, S, lang, { fixed: b, room: b.roomName?.[lang] });
     $('#m-folio').hidden = false;
     $('#found').hidden = false;
-    cancel.hidden = b.status === 'cancelled' || b.status === 'declined';
+    cancel.hidden = b.status === 'cancelled' || b.status === 'declined' || !!b.paid;
     cancel.textContent = M.cancel;
     cancel.dataset.armed = '';
-    $('#m-msg').textContent = { pending: M.pendingMsg, confirmed: '', declined: M.declinedMsg, cancelled: M.cancelledMsg }[b.status];
+    const confirmedMsg = b.paid ? M.paidMsg : b.payUrl ? M.payMsg : b.roomName ? M.confirmedMsg : '';
+    $('#m-msg').textContent = { pending: M.pendingMsg, confirmed: confirmedMsg, declined: M.declinedMsg, cancelled: M.cancelledMsg }[b.status];
+    $('#m-note').textContent = b.hotelNote ? `${M.hotelNote}: ${b.hotelNote}` : '';
+    $('#m-note').hidden = !b.hotelNote;
+    const pay = $<HTMLAnchorElement>('#pay-now');
+    pay.hidden = !b.payUrl;
+    if (b.payUrl) pay.href = b.payUrl;
+    try { sessionStorage.setItem(KEPT, JSON.stringify({ ref: b.ref, phone: b.phone })); } catch { /* a convenience only */ }
   }
 
   form.addEventListener('submit', async (e) => {
@@ -87,6 +97,12 @@ const strings = { folio: branch('folio'), plans: branch('plans'), book: branch('
     $('#m-folio').hidden = true;
     try { showBooking(await findBooking(ref.value, phone.value)); } catch (x) { fail(x); }
   });
+
+  // back from the payment page, or a reload: open the same request again without retyping the phone
+  try {
+    const kept = JSON.parse(sessionStorage.getItem(KEPT) || 'null') as { ref: string; phone: string } | null;
+    if (kept && kept.ref === ref.value.trim().toUpperCase()) { phone.value = kept.phone; form.requestSubmit(); }
+  } catch { /* nothing kept */ }
 
   // cancelling takes two presses: the first arms the button
   cancel.addEventListener('click', async () => {

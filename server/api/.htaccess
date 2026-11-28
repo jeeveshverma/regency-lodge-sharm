@@ -1,0 +1,7 @@
+# Every /api/... address goes to index.php. Code, config and seed files are never served.
+Options -Indexes
+RewriteEngine On
+RewriteRule ^(lib|seed)/ - [F,L]
+RewriteRule ^(config.*\.php|schema\.sql)$ - [F,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]

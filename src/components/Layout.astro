@@ -48,8 +48,8 @@ const hotel = {
   <header class="hdr">
     <div class="wrap hdr-in">
       <a class="brand" href={path(lang)}>
-        <span class="brand-ar" lang="ar">{SITE.name.ar}</span>
-        <span class="brand-en" lang="en">{SITE.name.en}</span>
+        <span class="brand-ar" lang="ar" data-live="name-ar">{SITE.name.ar}</span>
+        <span class="brand-en" lang="en" data-live="name-en">{SITE.name.en}</span>
       </a>
       <nav class="nav" aria-label="Main">
         <a href={`${home}#book`}>{t('nav.book')}</a>
@@ -60,7 +60,7 @@ const hotel = {
       </nav>
       <div class="hdr-end">
         <a class="lang" href={switchLang(lang, page)} lang={other.code} hreflang={other.code}>{t('nav.lang')}</a>
-        <a class="tel num" href={`tel:${SITE.phone}`} dir="ltr">{SITE.phoneDisplay}</a>
+        <a class="tel num" href={`tel:${SITE.phone}`} dir="ltr" data-live="tel">{SITE.phoneDisplay}</a>
       </div>
     </div>
   </header>
@@ -71,18 +71,24 @@ const hotel = {
     <div class="wrap foot-in">
       <h2>{t('contact.title')}</h2>
       <dl class="foot-list">
-        <div><dt>{t('contact.phone')}</dt><dd><a class="num" href={`tel:${SITE.phone}`} dir="ltr">{SITE.phoneDisplay}</a></dd></div>
-        <div><dt>{t('contact.whatsapp')}</dt><dd><a class="num" href={`https://wa.me/${SITE.whatsapp}`} dir="ltr" target="_blank" rel="noopener">{SITE.whatsappDisplay}</a></dd></div>
-        <div><dt>{t('contact.email')}</dt><dd><a href={`mailto:${SITE.email}`} dir="ltr">{SITE.email}</a></dd></div>
-        <div><dt>{t('contact.address')}</dt><dd>{SITE.street[lang]}<br />{SITE.city[lang]}</dd></div>
+        <div><dt>{t('contact.phone')}</dt><dd><a class="num" href={`tel:${SITE.phone}`} dir="ltr" data-live="tel">{SITE.phoneDisplay}</a></dd></div>
+        <div><dt>{t('contact.whatsapp')}</dt><dd><a class="num" href={`https://wa.me/${SITE.whatsapp}`} dir="ltr" target="_blank" rel="noopener" data-live="wa"><span data-live="wa-text">{SITE.whatsappDisplay}</span></a></dd></div>
+        <div><dt>{t('contact.email')}</dt><dd><a href={`mailto:${SITE.email}`} dir="ltr" data-live="email">{SITE.email}</a></dd></div>
+        <div><dt>{t('contact.address')}</dt><dd data-live="address">{SITE.street[lang]}<br />{SITE.city[lang]}</dd></div>
       </dl>
       <p class="foot-rights">© <span class="num">2026</span> {t('foot.rights')}</p>
       <p class="foot-credit">{t('foot.credit')}</p>
     </div>
   </footer>
 
-  <a class="wa-float" href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener" aria-label={t('contact.whatsapp')}>
+  <a class="wa-float" data-live="wa" href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener" aria-label={t('contact.whatsapp')}>
     <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path fill="currentColor" d="M16 3C8.8 3 3 8.7 3 15.8c0 2.5.7 4.9 2 6.9L3 29l6.5-2c1.9 1 4.1 1.6 6.5 1.6 7.2 0 13-5.7 13-12.8S23.200 3 16 3Zm0 23.300c-2.100 0-4.100-.6-5.800-1.600l-.4-.3-3.900 1.200 1.200-3.700-.3-.4a10.300 10.300 0 0 1-1.600-5.700C5.200 10 10 5.300 16 5.300S26.800 10 26.800 15.800 22 26.300 16 26.300Zm5.900-7.800c-.3-.2-1.900-.9-2.200-1-.3-.1-.5-.2-.7.2l-1 1.200c-.2.2-.4.2-.7.1-1.900-.9-3.200-1.700-4.400-3.800-.3-.6.3-.5.9-1.700.1-.2 0-.4 0-.6l-1-2.400c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-1.100 1.200-1.300 2.500-.9 3.700.6 1.800 2.700 5.300 6.800 6.900 2.300.9 3.200.7 4.100.3.800-.4 1.600-1.200 1.800-1.900.1-.5.1-.8-.5-.9Z"/></svg>
   </a>
+  <script>
+    // name, logo, contact details and edited texts from the hotel's dashboard (nothing happens on the static preview)
+    import { loadLive, applyCommon } from '../lib/live';
+    const live = await loadLive();
+    if (live) applyCommon(live, document.documentElement.lang as 'ar' | 'en');
+  </script>
 </body>
 </html>

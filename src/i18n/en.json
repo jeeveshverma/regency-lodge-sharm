@@ -60,7 +60,8 @@
     "cta": "Request to book",
     "onRequest": "Prices for these dates are not published yet.",
     "ask": "Ask us on WhatsApp",
-    "waAsk": "Hello, I would like the price of a room at Regency Royal Sharm from {in} to {out}."
+    "waAsk": "Hello, I would like the price of a room at Regency Royal Sharm from {in} to {out}.",
+    "room": "Room"
   },
   "room": {
     "title": "The room",
@@ -181,7 +182,11 @@
     "payArrival": "Pay on arrival, at reception",
     "payOnline": "Pay online by card, in EGP (Paymob)",
     "payHint": "Online payment opens only after the hotel confirms your reservation.",
-    "pendingNote": "Nothing is charged now. The hotel checks availability first, then confirms or declines your request."
+    "pendingNote": "Nothing is charged now. The hotel checks availability first, then confirms or declines your request.",
+    "doneLeadApi": "We have sent your request to our booking team. They check availability and answer you by WhatsApp, phone or email. Keep your request number.",
+    "errNetwork": "The request could not be sent: no connection to the hotel. Check your internet and try again, or message us on WhatsApp.",
+    "errTooMany": "Too many requests from this connection. Try again in an hour or message us on WhatsApp.",
+    "errServer": "The hotel's system could not take the request just now. Try again, or message us on WhatsApp."
   },
   "mine": {
     "metaTitle": "My reservation | Regency Royal Sharm",
@@ -198,7 +203,13 @@
     "pending": "Pending hotel confirmation",
     "declined": "Declined by the hotel",
     "pendingMsg": "The hotel has not answered yet. You will hear from our booking team.",
-    "declinedMsg": "The hotel could not accept this request. Try other dates or message us on WhatsApp."
+    "declinedMsg": "The hotel could not accept this request. Try other dates or message us on WhatsApp.",
+    "confirmedMsg": "The hotel has confirmed your reservation.",
+    "payMsg": "The hotel has confirmed your reservation. You can pay online now.",
+    "paidMsg": "The hotel has confirmed your reservation and received your payment.",
+    "payNow": "Pay now",
+    "errPaid": "This reservation is already paid. To cancel it, contact the hotel.",
+    "hotelNote": "Message from the hotel"
   },
   "sticker": {
     "from": "from",

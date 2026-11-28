@@ -45,6 +45,7 @@ for (const [lang, pre] of [['ar', '/'], ['en', '/en/']]) for (const width of [39
   // my booking: wrong phone refused, right phone found, cancel in two presses
   await page.goto(`${base}${pre}booking/?ref=${ref}`, { waitUntil: 'networkidle' });
   await page.fill('#m-phone', '0111111111'); await page.click('#find button[type=submit]');
+  await page.waitForSelector('#m-err:not([hidden])');
   check(`${tag} wrong phone refused`, await page.isVisible('#m-err') && !(await page.isVisible('#found')), null);
   await page.fill('#m-phone', '+20 100 123 4567'); await page.click('#find button[type=submit]');
   await page.waitForSelector('#found:not([hidden])');

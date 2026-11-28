@@ -78,9 +78,9 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
   <section class="hero" id="book">
     <div class="wrap hero-in">
       <div class="hero-text">
-        <p class="kicker">{t('hero.kicker')}</p>
-        <h1><span>{t('hero.h1a')}</span> <span class="hl">{t('hero.h1b')}</span></h1>
-        <p class="hero-lead">{t('hero.lead', { price: money(FROM_PRICE) })}</p>
+        <p class="kicker" data-t="hero.kicker">{t('hero.kicker')}</p>
+        <h1><span data-t="hero.h1a">{t('hero.h1a')}</span> <span class="hl" data-t="hero.h1b">{t('hero.h1b')}</span></h1>
+        <p class="hero-lead" data-t="hero.lead" data-tpl={t('hero.lead')}>{t('hero.lead', { price: money(FROM_PRICE) })}</p>
         <form class="bar" id="bar" onsubmit="return false">
           <label><span>{t('bar.in')}</span><input type="date" id="f-in" required /></label>
           <label><span>{t('bar.out')}</span><input type="date" id="f-out" required /></label>
@@ -88,13 +88,13 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
             <select id="f-rooms">{Array.from({ length: MAX_ROOMS }, (_, i) => <option value={i + 1}>{i + 1}</option>)}</select>
           </label>
         </form>
-        <p class="count">{t('rack.note')}</p>
+        <p class="count" data-t="rack.note">{t('rack.note')}</p>
       </div>
 
       <div class="rack-wrap">
         <p class="sunprice">
           <svg viewBox="-80 -80 160 160" aria-hidden="true"><g class="rays">{rays.map((a) => <path d="M0 -62V-76" transform={`rotate(${a})`} />)}</g><circle r="56" /></svg>
-          <span>{t('sticker.from')}</span><b>{money(FROM_PRICE)}</b><span>{t('sticker.unit')}</span>
+          <span>{t('sticker.from')}</span><b data-live="from">{money(FROM_PRICE)}</b><span>{t('sticker.unit')}</span>
         </p>
         <svg class="rope" viewBox="0 0 260 64" aria-hidden="true"><path d="M14 62L130 10L246 62" /><circle cx="130" cy="9" r="6" /></svg>
         <div class="rack" aria-labelledby="rack-title">
@@ -122,7 +122,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
 
   <figure class="poolshot wrap">
     <Image src={pool} alt={t('photo.pool')} widths={[480, 800, 1280]} sizes="(min-width: 1240px) 1176px, 100vw" format="avif" quality={64} loading="eager" />
-    <figcaption>{t('photo.note')}</figcaption>
+    <figcaption data-t="photo.note">{t('photo.note')}</figcaption>
   </figure>
 
   <section class="today">
@@ -139,8 +139,9 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
 
   <section class="plans wrap">
     <div class="plans-main">
-      <h2 class="sq">{t('plans.title')}</h2>
-      <p class="lead">{t('plans.lead')}</p>
+      <h2 class="sq" data-t="plans.title">{t('plans.title')}</h2>
+      <p class="lead" data-t="plans.lead">{t('plans.lead')}</p>
+      <div class="roomtabs" data-roomtabs role="group" aria-label={t('room.title')} hidden></div>
       <div class="cards" role="radiogroup" aria-label={t('plans.title')}>
         {PLANS.map((p) => (
           <label class="card">
@@ -148,13 +149,13 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
             <PlanIcon id={p.id} />
             <span class="card-name">{t(`plans.${p.id}`)}</span>
             <span class="card-note">{t(`plans.${p.id}Note`)}</span>
-            <span class="card-price"><b>{money(p.price)}</b> {t('plans.unit')}</span>
+            <span class="card-price"><b data-price={p.id}>{money(p.price)}</b> {t('plans.unit')}</span>
             <span class="card-total" data-total={p.id}></span>
           </label>
         ))}
       </div>
       <ol class="direct-list" aria-label={t('direct.title')}>
-        {['a', 'b', 'c'].map((k) => <li><b>{t(`direct.${k}`)}</b><span>{t(`direct.${k}T`)}</span></li>)}
+        {['a', 'b', 'c'].map((k) => <li><b data-t={`direct.${k}`}>{t(`direct.${k}`)}</b><span data-t={`direct.${k}T`}>{t(`direct.${k}T`)}</span></li>)}
       </ol>
     </div>
 
@@ -166,9 +167,10 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
   <section class="room" id="room">
     <div class="wrap room-in">
       <div class="room-text">
-        <h2 class="sq">{t('room.title')}</h2>
-        <p class="lead">{t('room.lead')}</p>
-        <dl class="spec">
+        <h2 class="sq" id="room-name">{t('room.title')}</h2>
+        <div class="roomtabs" data-roomtabs role="group" aria-label={t('room.title')} hidden></div>
+        <p class="lead" id="room-lead">{t('room.lead')}</p>
+        <dl class="spec" id="room-spec">
           {spec.map((k) => <div><dt>{t(`room.${k}`)}</dt><dd>{t(`room.${k}V`)}</dd></div>)}
         </dl>
       </div>
@@ -176,7 +178,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
         <RoomPlan lang={lang} />
       </div>
     </div>
-    <div class="wrap room-photos">
+    <div class="wrap room-photos" id="room-photos">
       {roomShots.map((r, i) => (
         <Image src={r} alt={t(`room.alt${i + 1}`)} widths={[360, 560, 680]} sizes="(min-width: 900px) 370px, 46vw" format="avif" quality={66} />
       ))}
@@ -184,8 +186,8 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
   </section>
 
   <section class="look wrap" id="photos">
-    <h2 class="sq">{t('look.title')}</h2>
-    <div class="look-grid">
+    <h2 class="sq" data-t="look.title">{t('look.title')}</h2>
+    <div class="look-grid" id="look-grid">
       {gallery.map((g) => (
         <figure class:list={[{ wide: g.wide }]}>
           <Image src={g.src} alt={t(`look.${g.k}`)} widths={g.wide ? [480, 800, 1200] : [320, 520, 800]} sizes={g.wide ? '(min-width: 900px) 580px, 92vw' : '(min-width: 900px) 280px, 46vw'} format="avif" quality={62} />
@@ -214,28 +216,28 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
   <section class="day" id="day">
     <Reef />
     <div class="wrap day-in">
-      <h2>{t('day.title')}</h2>
-      <p class="day-lead">{t('day.lead')}</p>
+      <h2 data-t="day.title">{t('day.title')}</h2>
+      <p class="day-lead" data-t="day.lead">{t('day.lead')}</p>
       <ol class="day-list">
         <li>
           <span class="when">{t('day.am')}</span>
-          <h3>{t('day.amT')}</h3>
-          <p>{t('day.amB')}</p>
+          <h3 data-t="day.amT">{t('day.amT')}</h3>
+          <p data-t="day.amB">{t('day.amB')}</p>
           <ul class="chips"><li>{place(dive)} · {t('day.walk', { n: dive.min })}</li><li>{BEACH[lang]} · {t('day.walk', { n: BEACH.min })}</li></ul>
         </li>
         <li>
           <span class="when">{t('day.pm')}</span>
-          <h3>{t('day.pmT')}</h3>
-          <p>{t('day.pmB')}</p>
+          <h3 data-t="day.pmT">{t('day.pmT')}</h3>
+          <p data-t="day.pmB">{t('day.pmB')}</p>
         </li>
         <li>
           <span class="when">{t('day.eve')}</span>
-          <h3>{t('day.eveT')}</h3>
-          <p>{t('day.eveB')}</p>
+          <h3 data-t="day.eveT">{t('day.eveT')}</h3>
+          <p data-t="day.eveB">{t('day.eveB')}</p>
           <ul class="chips">{WALKS.slice(1).map((w) => <li>{place(w)} · {t('day.walk', { n: w.min })}</li>)}</ul>
         </li>
       </ol>
-      <p class="trips"><b>{t('day.trips')}</b> {t('day.tripsT')} {t('day.airport')}</p>
+      <p class="trips"><b>{t('day.trips')}</b> <span data-t="day.tripsT">{t('day.tripsT')}</span> {t('day.airport')}</p>
     </div>
   </section>
 </Layout>
@@ -245,8 +247,9 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
   import { sunTimes, hhmm, cairoOffsetHours } from '../lib/sun';
   import { $, fill, fillFolio, strings } from '../lib/ui';
   import { SITE, SEA_TEMP, PLANS } from '../data/site';
+  import { loadLive, pickRoom, photoImg, type LiveRoom } from '../lib/live';
 
-  const lang = document.documentElement.lang;
+  const lang = document.documentElement.lang as 'ar' | 'en';
   const S = strings();
   const fIn = $<HTMLInputElement>('#f-in'), fOut = $<HTMLInputElement>('#f-out'), fRooms = $<HTMLSelectElement>('#f-rooms');
   const slots = [...document.querySelectorAll<HTMLElement>('.slot')];
@@ -272,6 +275,49 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
   let stay = readStay();
   fIn.min = iso(new Date());
 
+  // With the backend: the hotel's room categories, their prices and photos, and the photo wall.
+  const live = await loadLive();
+  let room: LiveRoom | null = live ? pickRoom(live, stay.room) : null;
+  if (room && stay.room !== room.id) stay = writeStay({ ...stay, room: room.id });
+  const tabs = [...document.querySelectorAll<HTMLElement>('[data-roomtabs]')];
+  function showRoom() {
+    if (!live || !room) return;
+    for (const p of PLANS) $(`[data-price=${p.id}]`).textContent = money(p.price);
+    for (const b of document.querySelectorAll<HTMLElement>('[data-roomtabs] button')) b.setAttribute('aria-pressed', String(Number(b.dataset.id) === room.id));
+    $('#room-name').textContent = room.name[lang];
+    $('#room-lead').textContent = room.desc[lang];
+    // a facility written "Label: value" becomes a two-column row
+    $('#room-spec').replaceChildren(...room.facilities[lang].map((line) => {
+      const at = line.indexOf(':');
+      const row = document.createElement('div'), dd = document.createElement('dd');
+      if (at > 0) { const dt = document.createElement('dt'); dt.textContent = line.slice(0, at).trim(); row.append(dt); } else row.className = 'full';
+      dd.textContent = at > 0 ? line.slice(at + 1).trim() : line;
+      row.append(dd);
+      return row;
+    }));
+    $('#room-photos').replaceChildren(...room.photos.map((p) => photoImg(p, lang, '(min-width: 900px) 370px, 46vw')));
+  }
+  if (live) {
+    if (live.rooms.length > 1) for (const box of tabs) {
+      box.replaceChildren(...live.rooms.map((r) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.dataset.id = String(r.id); b.textContent = r.name[lang];
+        b.addEventListener('click', () => { room = pickRoom(live, r.id); stay = writeStay({ ...stay, room: r.id }); showRoom(); render(); });
+        return b;
+      }));
+      box.hidden = false;
+    }
+    showRoom();
+    $('#look-grid').replaceChildren(...live.gallery.map((p) => {
+      const fig = document.createElement('figure');
+      if (p.wide) fig.className = 'wide';
+      fig.append(photoImg(p, lang, p.wide ? '(min-width: 900px) 580px, 92vw' : '(min-width: 900px) 280px, 46vw'));
+      if (p.cap[lang]) { const cap = document.createElement('figcaption'); cap.textContent = p.cap[lang]; fig.append(cap); }
+      return fig;
+    }));
+    $('#photos').hidden = live.gallery.length === 0;
+  }
+
   function render() {
     fIn.value = stay.in; fOut.value = stay.out; fRooms.value = String(stay.rooms);
     fOut.min = iso(plusDays(parse(stay.in), 1));
@@ -283,7 +329,7 @@ const rays = Array.from({ length: 18 }, (_, i) => i * 20);
       const pq = quote(stay, p.id);
       $(`[data-total=${p.id}]`).textContent = pq.onRequest ? '' : fill(S.plans.total, { total: money(pq.total) });
     }
-    const q = fillFolio(document, stay, S, lang);
+    const q = fillFolio(document, stay, S, lang, { room: live && live.rooms.length > 1 ? room?.name[lang] : undefined });
 
     // the key board is a drawing, not availability: one yellow key for each room asked for
     for (const el of slots) {

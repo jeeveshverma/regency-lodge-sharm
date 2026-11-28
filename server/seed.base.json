@@ -1,0 +1,26 @@
+{
+  "_": "First content of a new installation: what the site showed before the dashboard existed. Captions and texts come from src/i18n; scripts/assemble.mjs builds api/seed/ from this file. After installation everything here is edited in the dashboard.",
+  "settings": {
+    "name": { "ar": "ريجينسي رويال شرم", "en": "Regency Royal Sharm" },
+    "contact": { "phone": "+20 103 665 4930", "whatsapp": "+20 112 277 6555", "email": "Regencylodge@royalhils.com", "bookingEmail": "Regencylodge@royalhils.com" },
+    "address": { "ar": "شارع مجلس المدينة، الهضبة، شرم الشيخ، جنوب سيناء", "en": "Magles El-Madina St, El Hadaba, Sharm El Sheikh, South Sinai" },
+    "checkIn": "14:00",
+    "checkOut": "12:00",
+    "ratesUntil": "2026-12-21"
+  },
+  "room": {
+    "name": { "ar": "غرفة مزدوجة قياسية", "en": "Standard double room" },
+    "adults": 2, "children": 2, "price_ro": 1500, "price_bb": 1600, "price_hb": 1800,
+    "spec": ["bed", "guests", "view", "ac", "minibar", "tv"],
+    "photos": ["room-grey", "room-twin", "room-double", "room-triple", "room-lamps", "room3"]
+  },
+  "gallery": [
+    ["pool-wide", "poolwide", true], ["garden", "garden", true], ["flowers", "flowers"], ["courtyard", "courtyard"], ["slides", "slides"],
+    ["terrace-chairs", "chairs"], ["pool2", "pool2", true], ["window-view", "window"], ["pool-above", "above"], ["balcony-view", "balcony"],
+    ["pool-bar", "poolbar"], ["blue-door", "door"], ["walkway", "walkway"], ["restaurant", "restaurant"], ["terrace-night", "night"],
+    ["bathroom", "bathroom"], ["poolside", "poolside"]
+  ],
+  "texts": ["hero.kicker", "hero.h1a", "hero.h1b", "hero.lead", "rack.note", "photo.note", "plans.title", "plans.lead",
+    "direct.a", "direct.aT", "direct.b", "direct.bT", "direct.c", "direct.cT", "look.title",
+    "day.title", "day.lead", "day.amT", "day.amB", "day.pmT", "day.pmB", "day.eveT", "day.eveB", "day.tripsT"]
+}

@@ -2,9 +2,10 @@
  * The guest's stay: dates, number of rooms and meal plan. It lives in the URL (a link reproduces
  * the search) and in sessionStorage (it survives moving between pages); the URL wins. Client-side.
  */
-import { PLANS, RATES_UNTIL, type PlanId } from '../data/site';
+import { PLANS, RATES, type PlanId } from '../data/site';
 
-export interface Stay { in: string; out: string; rooms: number; plan: PlanId }
+/** `room` is the room category's id from the dashboard; absent on the static preview, which has one room. */
+export interface Stay { in: string; out: string; rooms: number; plan: PlanId; room?: number }
 
 const KEY = 'rl-stay';
 export const MAX_ROOMS = 5;
@@ -25,7 +26,8 @@ export function normalise(s: Partial<Stay>): Stay {
   if (+b - +a > 30 * 864e5) b = plusDays(a, 30);
   const rooms = Math.max(1, Math.min(MAX_ROOMS, Math.round(Number(s.rooms)) || 1));
   const plan = PLANS.some((p) => p.id === s.plan) ? s.plan! : 'bb';
-  return { in: iso(a), out: iso(b), rooms, plan };
+  const room = Math.round(Number(s.room)) || undefined;
+  return { in: iso(a), out: iso(b), rooms, plan, ...(room ? { room } : {}) };
 }
 
 export function readStay(): Stay {
@@ -37,6 +39,7 @@ export function readStay(): Stay {
   if (q.get('out')) url.out = q.get('out')!;
   if (q.get('rooms')) url.rooms = Number(q.get('rooms'));
   if (q.get('plan')) url.plan = q.get('plan') as PlanId;
+  if (q.get('room')) url.room = Number(q.get('room'));
   return normalise({ ...saved, ...url });
 }
 
@@ -45,12 +48,13 @@ export function writeStay(s: Partial<Stay>): Stay {
   try { sessionStorage.setItem(KEY, JSON.stringify(n)); } catch { /* private window: the URL still carries it */ }
   const q = new URLSearchParams(location.search);
   q.set('in', n.in); q.set('out', n.out); q.set('rooms', String(n.rooms)); q.set('plan', n.plan);
+  if (n.room) q.set('room', String(n.room)); else q.delete('room');
   history.replaceState(history.state, '', `${location.pathname}?${q}${location.hash}`);
   return n;
 }
 
 /** The stay as a query string, for links between pages. */
-export const stayQuery = (s: Stay) => new URLSearchParams({ in: s.in, out: s.out, rooms: String(s.rooms), plan: s.plan }).toString();
+export const stayQuery = (s: Stay) => new URLSearchParams({ in: s.in, out: s.out, rooms: String(s.rooms), plan: s.plan, ...(s.room ? { room: String(s.room) } : {}) }).toString();
 
 /** The nights of a stay, as the date each night starts. */
 export function nightDates(s: Stay): string[] {
@@ -63,7 +67,7 @@ export function nightDates(s: Stay): string[] {
 export function quote(s: Stay, plan: PlanId = s.plan) {
   const nights = nightDates(s);
   const rate = PLANS.find((p) => p.id === plan)!.price;
-  const onRequest = nights.some((d) => d > RATES_UNTIL);
+  const onRequest = RATES.until !== '' && nights.some((d) => d > RATES.until);
   return { nights: nights.length, rate, total: nights.length * s.rooms * rate, onRequest };
 }
 

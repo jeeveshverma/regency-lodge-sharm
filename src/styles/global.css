@@ -332,3 +332,12 @@ html[lang='ar'] .count { padding: 2px 18px 4px; }
 .wa-float:hover, .wa-float:focus-visible { translate: -2px -2px; box-shadow: 6px 6px 0 var(--navy); }
 @media (prefers-reduced-motion: reduce) { .wa-float { transition: none; } }
 @media print { .wa-float { display: none; } }
+
+/* --- content from the hotel's dashboard --- */
+.brand-logo { display: block; height: 46px; width: auto; max-width: 210px; object-fit: contain; }
+.roomtabs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.roomtabs button { font: 600 1rem var(--sans); color: var(--navy); background: var(--white); border: 3px solid var(--navy); padding: 8px 16px; cursor: pointer; }
+.roomtabs button[aria-pressed='true'] { background: var(--sun); box-shadow: var(--hard); }
+.spec > div.full { grid-template-columns: 1fr; }
+.look-grid img { width: 100%; }
+#pay-now { margin-top: 14px; }
